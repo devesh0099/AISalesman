@@ -72,49 +72,78 @@ session_transcripts: dict = {}
 #         await websocket.close(code=1000)
 #         if session_id in session_transcripts:
 #             del session_transcripts[session_id]
-
 @app.websocket("/ws/speech-to-text/")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     session_id = str(time.time())
     session_transcripts[session_id] = []
-    
+
     try:
         while True:
             # Receive audio data
             audio_data = await websocket.receive_bytes()
-            
+
             # Convert bytes to numpy array (float32)
             audio_array = np.frombuffer(audio_data, dtype=np.float32)
-            print("Data receieved")
-            
+
+            # Validate audio data range
+            if audio_array.max() > 1.0 or audio_array.min() < -1.0:
+                raise ValueError("Received audio data is out of range [-1.0, 1.0]")
+
+            print("Data received")
+
             # Ensure audio data is valid
             if len(audio_array) > 0:
                 # Get transcription for this chunk
                 print("Given to transcribe")
                 transcript_chunk = transcribe_audio(audio_array)
-                print("transcribed done")
+                print("Transcription done")
 
                 if transcript_chunk:
                     # Add to session transcript
                     session_transcripts[session_id].append(transcript_chunk)
-                    
+
                     # Send back current transcription
-                    print("Transcription send back")
+                    print("Transcription sent back")
                     await websocket.send_json({
                         "transcription": transcript_chunk,
                         "complete_transcript": " ".join(session_transcripts[session_id])
                     })
 
     except WebSocketDisconnect:
-        print(f"Client disconnected, session {session_id}")
         if session_id in session_transcripts:
             del session_transcripts[session_id]
     except Exception as e:
-        print(f"Error occurred: {e}")
         if session_id in session_transcripts:
             del session_transcripts[session_id]
-        await websocket.close(code=1000)
+        await websocket.close
+
+
+# @app.websocket("/ws/speech-to-text/")
+# async def websocket_endpoint(websocket: WebSocket):
+#     await websocket.accept()
+#     session_transcripts = []
+
+#     try:
+#         while True:
+#             # Receive audio data
+#             audio_data = await websocket.receive_bytes()
+
+#             # Convert to NumPy array
+#             audio_array = np.frombuffer(audio_data, dtype=np.float32)
+
+#             # Process and transcribe
+#             if len(audio_array) > 0:
+#                 transcription = transcribe_audio(audio_array)
+#                 if transcription:
+#                     session_transcripts.append(transcription)
+#                     await websocket.send_json({
+#                         "transcription": transcription,
+#                         "complete_transcript": " ".join(session_transcripts)
+#                     })
+#     except WebSocketDisconnect:
+#         print("Client disconnected")
+
 
 @app.post("/generate-response/")
 async def generate_response(input_text: str = Form(...)):

@@ -151,19 +151,23 @@ function startAudioChunking() {
         const audioBlob = event.data;
         if (audioBlob.size > 0) {
             try {
-                // Convert blob to array buffer
                 const arrayBuffer = await audioBlob.arrayBuffer();
-                
-                // Convert to 16-bit PCM
-                const audioContext = new AudioContext();
+                const audioContext = new AudioContext({ sampleRate: 16000 }); // Set sample rate to 16 kHz
                 const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
-                const float32Array = audioBuffer.getChannelData(0);
-                
-                // Send the audio data
+
+                // Ensure mono channel and normalize to [-1.0, 1.0]
+                const float32Array = audioBuffer.numberOfChannels > 1
+                    ? audioBuffer.getChannelData(0) // Use the first channel if stereo
+                    : audioBuffer.getChannelData(0);
+
+                const normalizedArray = float32Array.map(sample =>
+                    Math.max(-1.0, Math.min(1.0, sample))
+                );
+
+                // Send audio data to the backend
                 if (socket && socket.readyState === WebSocket.OPEN) {
-                    socket.send(float32Array.buffer);
+                    socket.send(new Float32Array(normalizedArray).buffer);
                 }
-                
                 audioContext.close();
             } catch (error) {
                 console.error("Error processing audio:", error);
