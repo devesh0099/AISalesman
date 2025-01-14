@@ -1,0 +1,381 @@
+:root {
+    --primary-color: #ffd700;
+    --secondary-color: #ffffff;
+    --background-color: #000000;
+    --card-background: #1a1a1a;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: var(--background-color);
+    color: var(--secondary-color);
+    margin: 0;
+    padding: 0;
+}
+
+.app {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    min-height: 100vh;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--primary-color);
+}
+
+h1, h2, h3 {
+    color: var(--primary-color);
+}
+
+h1 {
+    font-size: 3rem;
+    margin: 0;
+}
+
+button {
+    background-color: var(--primary-color);
+    color: var(--background-color);
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s, transform 0.3s;
+    font-size: 1rem;
+}
+
+button:hover {
+    background-color: #e6c200;
+    transform: translateY(-2px);
+}
+
+.back-to-home {
+    background-color: transparent;
+    color: var(--primary-color);
+    text-decoration: underline;
+    font-size: 1rem;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+
+.section {
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.3s;
+    transform: translateY(20px);
+    display: none;
+    position: relative;
+}
+
+.section.active {
+    opacity: 1;
+    transform: translateY(0);
+    display: block;
+}
+
+/* Add new rules for completed sections */
+.section.completed {
+    display: block;
+    opacity: 0.5;
+    pointer-events: none;
+    position: relative;
+}
+
+.section.completed::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    pointer-events: none;
+    border-radius: 8px;
+}
+
+/* Ensure completed sections don't interfere with active ones */
+.section.completed + .section.active {
+    margin-top: 40px;
+}
+
+/* Make sure buttons in completed sections are clearly disabled */
+.section.completed button {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.bot-selector, .sales-bot, .lead-bot, .call-interface, .call-summary {
+    background-color: var(--card-background);
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(255, 255, 255, 0.1);
+    padding: 40px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.bot-selector h2 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: var(--primary-color);
+}
+
+.bot-selector p {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+    color: var(--secondary-color);
+}
+
+.bot-options {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+}
+
+.bot-option {
+    background-color: var(--primary-color);
+    color: var(--background-color);
+    border: none;
+    border-radius: 8px;
+    padding: 20px;
+    width: 250px;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+    text-align: left;
+}
+
+.bot-option:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(255, 255, 255, 0.15);
+}
+
+.bot-option h3 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: var(--background-color);
+}
+
+.bot-option p {
+    font-size: 1rem;
+    margin: 0;
+    color: var(--background-color);
+}
+
+.scenario-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.scenario-card {
+    background-color: var(--card-background);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+    border: 2px solid var(--primary-color);
+}
+
+.scenario-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.2);
+    background-color: #2a2a2a;
+}
+
+.scenario-card h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.scenario-card p {
+    margin: 5px 0;
+}
+
+.custom-scenario {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+}
+
+.add-custom {
+    text-align: center;
+}
+
+.plus-sign {
+    font-size: 48px;
+    display: block;
+    margin-bottom: 10px;
+    color: var(--primary-color);
+}
+
+.custom-scenario form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.custom-scenario input,
+.custom-scenario textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid var(--primary-color);
+    border-radius: 4px;
+    background-color: var(--background-color);
+    color: var(--secondary-color);
+}
+
+.voice-circle {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px auto;
+    cursor: pointer;
+    font-weight: bold;
+    transition: transform 0.3s, background-color 0.3s;
+    text-align: center;
+    padding: 20px;
+    box-sizing: border-box;
+    color: var(--background-color);
+}
+
+.voice-circle:hover {
+    transform: scale(1.1);
+}
+
+.voice-circle.active {
+    animation: pulse 1s infinite;
+}
+
+.voice-circle.user {
+    background-color: var(--primary-color);
+}
+
+.voice-circle.ai {
+    background-color: #4CAF50;
+    color: var(--background-color);
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.interrupt-button {
+    margin-top: 10px;
+    background-color: #f44336;
+    color: var(--secondary-color);
+}
+
+.transcript, .ai-response {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #2a2a2a;
+    border-radius: 5px;
+    max-height: 200px;
+    overflow-y: auto;
+    width: 100%;
+}
+
+.call-interface button,
+.sales-bot button,
+.lead-bot button {
+    margin-top: 20px;
+}
+
+.call-manager {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.call-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.add-call {
+    background-color: var(--primary-color);
+    color: var(--background-color);
+    border: none;
+    border-radius: 20px;
+    padding: 5px 10px;
+    margin-left: 10px;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.add-call:hover {
+    transform: scale(1.1);
+}
+
+.active-calls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.call-container {
+    flex: 1 1 300px;
+    max-width: 400px;
+}
+
+.call-interface h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.call-interface h4 {
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.lead-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+    justify-content: center;
+}
+
+.lead-options button {
+    background-color: var(--card-background);
+    color: var(--secondary-color);
+    border: 1px solid var(--primary-color);
+    border-radius: 20px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.lead-options button:hover {
+    background-color: var(--primary-color);
+    color: var(--background-color);
+    transform: translateY(-2px);
+}

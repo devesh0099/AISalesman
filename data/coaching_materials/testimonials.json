@@ -1,0 +1,33 @@
+[
+  {
+    "student": "Riya Gupta",
+    "grade": 12,
+    "course": "Senior Plus",
+    "testimonial": "STUDY CENTRE helped me secure excellent makrs in my board exams. The faculty and study material were excellent!"
+  },
+  {
+    "student": "Aditya Sharma",
+    "grade": 11,
+    "course": "Senior",
+    "testimonial": "The personalized attention and regular mock tests at STUDY CENTRE made all the difference in my board preparation."
+  },
+  {
+    "parent": "Mr. Mehta",
+    "grade": 10,
+    "course": "Board Exams",
+    "testimonial": "My son’s confidence and grades have improved significantly after joining the board exam preparation classes at STUDY CENTRE."
+  },
+  {
+    "student": "Pooja Singh",
+    "grade": 6,
+    "course": "Warrior",
+    "testimonial": "The warrior batch provided a focused approach and the best resources."
+  },
+  {
+    "parent": "Mrs. Deshmukh",
+    "grade": 9,
+    "course": "Knight",
+    "testimonial": "This foundation program at STUDY CENTRE is outstanding. It’s laying a strong base for my daughter’s future board exams."
+  }
+]
+

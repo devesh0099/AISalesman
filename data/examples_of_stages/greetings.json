@@ -1,0 +1,19 @@
+{
+  "greetings": [
+    {
+      "text": "Greetings, this is {Agent Name} from Study Centre. How are you today?"
+    },
+    {
+      "text": "Hello! I'm {Agent Name} from Study Centre. I wanted to talk to you about something exciting. Do you have a moment?"
+    },
+    {
+      "text": "Good {Morning/Afternoon}, this is {Agent Name} from Study Centre. How are you?"
+    },
+    {
+      "text":"Myself, {Agent Name} calling from Study Centre. Do you have some moments?"
+    },
+    {
+      "text":"This is {Agent Name} callig from Study Centre. Are you free right now?"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+# F5-TTS | E2-TTS
+model = "F5-TTS"
+ref_audio = "aravind.wav"
+# If an empty "", transcribes the reference audio automatically.
+ref_text = "True joy comes from living authentically, embracing who you are, and sharing your unique gifts with the world.."
+gen_text = "Hello this is aravind from study centre."
+# File with text to generate. Ignores the text above.
+gen_file = ""
+remove_silence = false
+output_dir = "generated"
+output_file = "infer_cli_basic.wav"

@@ -1,0 +1,76 @@
+{
+    "cold_call_structure": {
+      "greeting": {
+        "intro": "Hello! I'm (name), calling from STUDY CENTRE.",
+        "company_name": "STUDY CENTRE.We provide expert coaching for JEE and NEET exams, both offline and online.",
+        "pattern_interrupt": "Did you know that our students have been scoring top ranks in JEE/NEET for the past 5 years?",
+        "value_proposition": "We offer personalized coaching, a structured curriculum, and experienced faculty to ensure your success in these highly competitive exams."
+      },
+      "qualification": {
+        "open_ended_questions": [
+          "What challenges are you currently facing in preparing for JEE/NEET?",
+          "How is your current study plan working for you?",
+          "Are you currently enrolled in any coaching program?"
+        ],
+        "pain_point_discovery": [
+          "What do you feel is preventing you from reaching your goals?",
+          "Are there any specific subjects or topics you find particularly challenging?"
+        ],
+        "current_situation_assessment": [
+          "How many hours per week are you currently dedicating to JEE/NEET preparation?",
+          "What resources or coaching are you currently using?"
+        ],
+        "budget_authority_confirmation": [
+          "Do you have a budget in mind for coaching?",
+          "Are you the decision-maker when it comes to choosing a coaching program?"
+        ]
+      },
+      "pitch": {
+        "tailored_value_proposition": "Our courses are designed to fit your unique needs. Whether you're looking for online flexibility or the immersive experience of offline classes, we have both options to help you prepare effectively.",
+        "specific_benefits": [
+          "Personalized coaching and doubt-solving sessions.",
+          "Flexible online and offline options to fit your schedule.",
+          "Comprehensive study materials and mock tests."
+        ],
+        "success_stories_social_proof": [
+          "Our students have consistently excelled, securing top ranks in competitive exams, including 10 All India Ranks (AIRs) in the top 100 of NEET 2024.",
+          "In the last 3 years, we have produced over 15 AIRs in the top 500 for JEE Advanced, with many students securing admissions to IITs and AIIMS."
+        ],
+
+        "clear_differentiators": [
+          "We offer a 5-day demo class for both online and offline programs so you can experience our teaching methodology before committing.",
+          "Our classes are taught by highly experienced faculty who have years of experience in training top performers."
+        ]
+      },
+      "objection_handling": {
+        "common_responses": {
+          "not_interested": {
+            "listen": "I understand that you may not be looking for coaching at this moment.",
+            "acknowledge": "However, many of our students initially felt the same way before they joined.",
+            "explore": "Can I ask what concerns you the most about taking coaching?",
+            "respond": "Our programs are designed to give you the edge you need for JEE/NEET preparation, and you can start with a free demo class."
+          },
+          "no_budget": {
+            "listen": "I understand that budget is an important factor when choosing coaching.",
+            "acknowledge": "We do offer different packages to suit various budgets, including flexible payment options.",
+            "explore": "Would you be open to learning more about our most affordable plans?"
+          },
+          "send_information": {
+            "listen": "I understand you'd like some more information first.",
+            "acknowledge": "We can send you the details, but may I ask what specific information you're looking for?",
+            "explore": "I'd be happy to send that over. However, a quick call or demo would help ensure you're getting the most relevant details."
+          },
+          "bad_timing": {
+            "listen": "I understand that timing is everything.",
+            "acknowledge": "Would it be alright if I follow up with you at a better time, or perhaps schedule a demo class?"
+          }
+        }
+      },
+      "closing": {
+        "clear_next_steps": "Let's schedule a demo class so you can experience our teaching approach firsthand.",
+        "specific_scheduling": "When would be a good time for you to attend a demo class? We offer both offline and online options.",
+        "commitment_confirmation": "Can I confirm that you'll be attending the demo class on [Date/Time]?"
+      }
+    }
+  }
+  

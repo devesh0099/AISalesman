@@ -1,0 +1,81 @@
+{
+    "discounts": {
+      "early_bird": {
+        "description": "Early registration discounts",
+        "discount_amount": 20,
+        "valid_months": ["December", "January", "February"],
+        "terms": "Must register at least 2 months before course start"
+      },
+      "merit": {
+        "basic": {
+          "min_score": 80,
+          "discount_amount": 30,
+          "description": "For students scoring above 80% in previous year"
+        },
+        "advanced": {
+          "min_score": 90,
+          "discount_amount": 50,
+          "description": "For students scoring above 90% in previous year"
+        },
+        "excellence": {
+          "min_score": 95,
+          "discount_amount": 100,
+          "description": "Full scholarship for exceptional students"
+        }
+      },
+      "family": {
+        "sibling": {
+          "discount_amount": 15,
+          "description": "When enrolling two or more siblings",
+          "terms": "Must provide proof of relationship"
+        },
+        "alumni": {
+          "discount_amount": 10,
+          "description": "For children of our alumni students",
+          "terms": "Must provide parent's previous enrollment details"
+        }
+      },
+      "group": {
+        "discount_amount": 25,
+        "min_students": 3,
+        "description": "Group enrollment discount",
+        "terms": "All students must enroll together"
+      },
+      "seasonal": {
+        "summer": {
+          "months": ["April", "May"],
+          "discount_amount": 15,
+          "description": "Summer enrollment special"
+        },
+        "festive": {
+          "months": ["October", "November"],
+          "discount_amount": 20,
+          "description": "Festive season special"
+        }
+      },
+      "loyalty": {
+        "returning": {
+          "discount_amount": 15,
+          "description": "For students continuing to next year",
+          "terms": "Must maintain minimum 70% attendance"
+        },
+        "long_term": {
+          "discount_amount": 25,
+          "description": "For students enrolling in 2+ year programs",
+          "terms": "Full payment required upfront"
+        }
+      },
+      "payment": {
+        "full_advance": {
+          "discount_amount": 10,
+          "description": "For full year payment in advance",
+          "terms": "Must pay entire year's fee upfront"
+        },
+        "quarterly_advance": {
+          "discount_amount": 5,
+          "description": "For quarterly advance payments",
+          "terms": "Must pay quarter's fee in advance"
+        }
+      }
+    }
+  }

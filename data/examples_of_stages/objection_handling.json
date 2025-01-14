@@ -1,0 +1,91 @@
+{
+    "common_objections": [
+        {
+            "objection": "The course is too expensive",
+            "response_strategies": [
+                {
+                    "type": "Value Proposition",
+                    "script": "When you invest in our program, you're not just paying for classes, but investing in a comprehensive success pathway with personalized mentorship."
+                },
+                {
+                    "type": "Flexible Options",
+                    "script": "We offer multiple payment plans, early bird discounts, and performance-based scholarships to make quality education accessible."
+                }
+            ]
+        },
+        {
+            "objection": "I'm not sure about online classes",
+            "response_strategies": [
+                {
+                    "type": "Flexibility Highlight",
+                    "script": "Our online classes offer recorded lectures, live interactive sessions, and 24/7 doubt-clearing support to ensure uninterrupted learning."
+                },
+                {
+                    "type": "Trial Offer",
+                    "script": "Why don't you try our 5-day free demo to experience our teaching methodology and interactive learning environment?"
+                }
+            ]
+        }
+    ],
+    "exam_specific_objections": {
+        "board_exams": [
+            {
+                "objection": "School teaching is sufficient",
+                "response_strategies": [
+                    {
+                        "type": "Supplementary Learning",
+                        "script": "Our program complements school teaching, providing deeper insights, advanced problem-solving techniques, and comprehensive revision strategies."
+                    }
+                ]
+            }
+        ],
+        "competitive_exams": [
+            {
+                "objection": "I can prepare on my own",
+                "response_strategies": [
+                    {
+                        "type": "Structured Approach",
+                        "script": "Self-study is challenging. Our structured program provides strategic guidance, expert mentorship, and proven success methodologies."
+                    }
+                ]
+            }
+        ]
+    }
+}
+{
+    "objections": {
+      "not_interested": [
+        {
+          "text": "I understand. Many of our current students felt the same initially but found value in a quick demo session."
+        },
+        {
+          "text": "No worries! Can I send you some information to review at your convenience?"
+        }
+      ],
+      "budget": [
+        {
+          "text": "We have flexible payment options to fit most budgets. Can I share the details?"
+        },
+        {
+          "text": "Would you be open to discussing our most affordable plan?"
+        }
+      ],
+      "bad_timing": [
+        {
+          "text": "I understand that timing is everything. Would it be alright if I follow up with you at a better time?"
+        },
+        {
+          "text": "We can schedule a demo at your convenience. When might work best for you?"
+        }
+      ],
+      "prepare_on_own"
+    }
+  }
+  
+{
+    "objections":[
+        {
+            "text":"ques:"
+        }
+    ]
+}

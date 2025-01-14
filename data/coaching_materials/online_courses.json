@@ -1,0 +1,97 @@
+{ 
+    "summary":"these batches are in online mode, online classes are held live with facility of recorded lectures to view or refer later, these courses are having experienced faculty for teaching and have a great learning structure.",
+    "all_online_batches":
+    [
+        {
+            "type":"board_exams",
+            "summary":"these courses aimed towards teaching children based on CBSE pattern for there schooling needs, these batches help children in understanding concepts deeply and excel in examination at a very affordable price",
+            "timings":"4pm - 7pm",
+            "for_student_of_class":[4,5,6,7,8,9,10,11,12],
+            "batches":[
+                {
+                    "name":"junior",
+                    "for_student":"4th class",
+                    "batch_type":"primary",
+                    "subjects":["hindi","english","maths","science","sst"],
+                    "price":"2000 rupees/year",
+                    "frequency":"3 days",
+                    "days":["monday","wednesday","friday"]
+                },
+                {
+                    "name":"junior plus",
+                    "for_student":"5th class",
+                    "batch_type":"primary",
+                    "subjects":["hindi","english","maths","science","sst"],
+                    "price":"2500 rupees/year",
+                    "frequency":"3 days",
+                    "days":["monday","wednesday","friday"]
+                },
+                {
+                    "name":"warrior",
+                    "for_student":"6th class",
+                    "batch_type":"secondary",
+                    "subjects":["hindi","english","maths","science","sst"],
+                    "price":"3000 rupees/year",
+                    "frequency":"4 days",
+                    "days":["monday","tuesday","thrusday","saturday"]
+                },
+                {
+                    "name":"warrior plus",
+                    "for_student":"7th class",
+                    "batch_type":"secondary",
+                    "subjects":["hindi","english","maths","science","sst"],
+                    "price":"3500 rupees/year",
+                    "frequency":"4 days",
+                    "days":["monday","tuesday","thrusday","saturday"]
+                },
+                {
+                    "name":"warrior supreme",
+                    "for_student":"8th class",
+                    "batch_type":"secondary",
+                    "subjects":["hindi","english","maths","science","sst"],
+                    "price":"4000 rupees/year",
+                    "frequency":"5 days",
+                    "days":["monday","tuesday","thrusday","friday","saturday"]
+                },
+                {
+                    "name":"knight",
+                    "for_student":"9th class",
+                    "batch_type":"sub senior",
+                    "subjects":["hindi","english","maths","science","sst"],
+                    "price":"4500 rupees/year",
+                    "frequency":"5 days",
+                    "days":["monday","tuesday","thrusday","friday","saturday"]
+                },
+                {
+                    "name":"knight supreme",
+                    "for_student":"10th class",
+                    "batch_type":"sub senior",
+                    "subjects":["hindi","english","maths","science","sst"],
+                    "price":"4500 rupees/year",
+                    "frequency":"5 days",
+                    "days":["monday","tuesday","thrusday","friday","saturday"]
+                },
+                {
+                    "name":"senior",
+                    "for_student":"11th class",
+                    "stream":"science",
+                    "batch_type":"senior",
+                    "subjects":["maths","physics","chemistry"],
+                    "price":"5000 rupees/year",
+                    "frequency":"6 days",
+                    "days":["monday","tuesday","wednesday","thrusday","friday","saturday"]
+                },
+                {
+                    "name":"senior plus",
+                    "for_student":"12th class",
+                    "stream":"science",
+                    "batch_type":"senior",
+                    "subjects":["maths","physics","chemistry"],
+                    "price":"5000 rupees/year",
+                    "frequency":"6 days",
+                    "days":["monday","tuesday","wednesday","thrusday","friday","saturday"]
+                }
+            ]
+        }
+    ]
+}

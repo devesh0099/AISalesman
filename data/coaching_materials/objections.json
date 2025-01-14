@@ -1,0 +1,58 @@
+[
+    {
+        "objection":"Online timings are hard to follow.",
+        "response":"All of our online live classes can be viewed in recorded form according to ones timing and own pace."
+    },
+    {
+        "objection":"Where to attend online classes?",
+        "response":"You can attend our online classes from our app or website."
+    },
+    {
+        "objection":"Are there going to be test included?",
+        "response":"Yes test series will be included in both online and offline batches."
+    },
+    {
+        "objection":"Why is this institude better than rest?",
+        "response":"Our institue is better on various fronts like teaching faculty, extermely competitve pricing, one on one mentorship, rewarding discounts based on performace."
+    },
+    {
+        "objection":"What is the batch size?",
+        "response":"We maintain small batch sizes to ensure personalized attention and effective interaction between students and teachers."
+    },
+    {
+        "objection": "Do you provide support for weaker students?",
+        "response": "Yes, we have remedial classes and special attention for students who need additional support."
+    },
+    {
+        "objection": "What is the success rate of the institute?",
+        "response": "Our institute has a proven track record with many of our students securing top ranks in JEE and NEET over the years."
+    },
+    {
+        "objection": "Do you offer guidance for board exams as well?",
+        "response": "Yes, we integrate board exam preparation into our courses to ensure excellent performance in board exam."
+    },
+    {
+        "objection": "Are extra classes provided for important topics?",
+        "response": "Yes, we conduct extra classes and workshops for critical topics and exam strategies."
+    },
+    {
+        "objection": "Are there any refund policies?",
+        "response": "Yes, refunds are available within the first 30 days of enrollment, subject to specific conditions. Please check with our support team for detailed terms."
+    },
+    {
+        "objection": "How often are mock tests conducted?",
+        "response": "Mock tests are conducted regularly to help students assess their progress. You’ll receive detailed feedback after every test."
+    },
+    {
+        "objection": "Do you offer a trial class or demo before enrollment?",
+        "response": "Yes, we offer a 5-day demo for offline classes and a demo class for online courses to help you experience our teaching methodology before enrolling."
+    },
+    {
+        "objection": "Can I join only the test series without enrolling in a full-time course?",
+        "response": "No, we don't provide comprehensive test series.You can enroll in our one year course and access the test series."
+    },
+    {
+        "objection": "Do you offer hostel facilities for outstation students?",
+        "response": "No, we don't provide living quaters for students.."
+    }
+]

@@ -1,0 +1,24 @@
+{
+    "online_course":
+    {
+        "through_app":
+        {
+            "step_1":"Download the App.",
+            "step_2":"Create an account using mobile number and name.",
+            "step_3":"Enter your class detail.",
+            "step_4":"Search for the requried batch.",
+            "step_5":"Pay the amount for the batch",
+            "step_6":"Go to he lectures tab to view recorded lectures or go to the live tab for live or upcoming lectures."
+        },
+        "through_website":
+        {
+            
+            "step_1":"Go to the Website.",
+            "step_2":"Create an account using mobile number and name.",
+            "step_3":"Enter your class detail.",
+            "step_4":"Search for the requried batch.",
+            "step_5":"Pay the amount for the batch",
+            "step_6":"Go to he lectures tab to view recorded lectures or go to the live tab for live or upcoming lectures."
+        }        
+    }
+}
