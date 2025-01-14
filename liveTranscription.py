@@ -1,4 +1,4 @@
-import sounddevice as sd
+# import sounddevice as sd
 import numpy as np
 from scipy.io.wavfile import write
 import requests
@@ -24,27 +24,27 @@ def detect_silence(audio_data, threshold=0.005):
     rms = np.sqrt(np.mean(np.square(audio_data)))
     return rms < threshold
 
-def record_audio_continuous():
-    print("Recording started. Speak now (or press Enter to stop)...")
-    try:
-        while not stop_recording.is_set():
-            start_time = time.time()
+# def record_audio_continuous():
+#     print("Recording started. Speak now (or press Enter to stop)...")
+#     try:
+#         while not stop_recording.is_set():
+#             start_time = time.time()
             
-            # Record audio
-            audio = sd.rec(int(sample_rate * duration), samplerate=sample_rate, channels=1, dtype='float32')
-            sd.wait()
-            audio = audio.flatten()
+#             # Record audio
+#             audio = sd.rec(int(sample_rate * duration), samplerate=sample_rate, channels=1, dtype='float32')
+#             sd.wait()
+#             audio = audio.flatten()
             
-            end_time = time.time()
+#             end_time = time.time()
             
-            # Only add to queue if not silent
-            if not detect_silence(audio):
-                audio_queue.put(audio)
-                print(f"\nRecorded segment: {end_time - start_time:.2f}s")
+#             # Only add to queue if not silent
+#             if not detect_silence(audio):
+#                 audio_queue.put(audio)
+#                 print(f"\nRecorded segment: {end_time - start_time:.2f}s")
             
-    except Exception as e:
-        print(f"Recording error: {str(e)}")
-        stop_recording.set()
+#     except Exception as e:
+#         print(f"Recording error: {str(e)}")
+#         stop_recording.set()
 
 def transcribe_audio(audio):
     """Transcribe audio data using Hugging Face API."""
@@ -106,44 +106,44 @@ def process_audio_queue():
 
 
 
-def main():
-    try:
-        # Start recording thread
-        recording_thread = Thread(target=record_audio_continuous)
-        recording_thread.start()
+# def main():
+#     try:
+#         # Start recording thread
+#         recording_thread = Thread(target=record_audio_continuous)
+#         recording_thread.start()
         
-        # Start processing thread
-        processing_thread = Thread(target=process_audio_queue)
-        processing_thread.start()
+#         # Start processing thread
+#         processing_thread = Thread(target=process_audio_queue)
+#         processing_thread.start()
         
-        input("Press Enter to stop recording...\n")
+#         input("Press Enter to stop recording...\n")
         
-        # Signal threads to stop
-        stop_recording.set()
+#         # Signal threads to stop
+#         stop_recording.set()
         
-        # Wait for threads to finish
-        recording_thread.join()
-        processing_thread.join()
+#         # Wait for threads to finish
+#         recording_thread.join()
+#         processing_thread.join()
         
-        # Print final transcription
-        if transcriptions:
-            print("\nComplete transcription:")
-            completed_transcription = " ".join(transcriptions)
-            return completed_transcription
-            # model.main(completed_transcription)
-            # print(" ".join(transcriptions))
-        else:
-            print("\nNo transcriptions were generated.")
-            return "\nNo transcriptions were generated."
+#         # Print final transcription
+#         if transcriptions:
+#             print("\nComplete transcription:")
+#             completed_transcription = " ".join(transcriptions)
+#             return completed_transcription
+#             # model.main(completed_transcription)
+#             # print(" ".join(transcriptions))
+#         else:
+#             print("\nNo transcriptions were generated.")
+#             return "\nNo transcriptions were generated."
         
-    except KeyboardInterrupt:
-        print("\nStopping recording...")
-        stop_recording.set()
-    except Exception as e:
-        print(f"Main error: {str(e)}")
-        stop_recording.set()
-    finally:
-        stop_recording.set()
+#     except KeyboardInterrupt:
+#         print("\nStopping recording...")
+#         stop_recording.set()
+#     except Exception as e:
+#         print(f"Main error: {str(e)}")
+#         stop_recording.set()
+#     finally:
+#         stop_recording.set()
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()
