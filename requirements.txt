@@ -1,4 +1,5 @@
 attr==0.3.2
+Cython==3.0.11
 cached_path==1.6.6
 ConfigParser==7.1.0
 contextlib2==21.6.0
