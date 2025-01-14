@@ -2,6 +2,12 @@
 let calls = [];
 let currentSection = 'botSelector';
 
+let mediaRecorder = null;
+let recordingInterval = null;
+let audioChunks = [];
+let socket = null;
+const CHUNK_DURATION = 5000; // 5 seconds in milliseconds
+
 // DOM elements
 const sections = {
     botSelector: document.getElementById('botSelector'),
@@ -93,65 +99,106 @@ function createCallInterface(callType, scenario) {
             mediaRecorder.stop();
         }
     }*/
-   function startRecording() {
-    navigator.mediaDevices.getUserMedia({ audio: true })
-        .then((stream) => {
-            mediaRecorder = new MediaRecorder(stream);
-            audioChunks = [];
-            socket = new WebSocket("http://127.0.0.1:8000/ws/speech-to-text/");
+function startRecording() {
+    navigator.mediaDevices.getUserMedia({ 
+        audio: { 
+            sampleRate: 16000,  // Match the sample rate with backend
+            channelCount: 1     // Mono audio
+        } 
+    })
+    .then((stream) => {
+        mediaRecorder = new MediaRecorder(stream);
+        socket = new WebSocket(`${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/ws/speech-to-text/`);
+        
+        // Set up WebSocket handlers
+        socket.onopen = () => {
+            console.log("WebSocket connection established");
+            startAudioChunking();
+        };
 
-            // Handle WebSocket events
-            socket.onopen = () => {
-                console.log("WebSocket connection established.");
-                mediaRecorder.start();
-            };
+        socket.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            handleTranscription(data);
+        };
 
-            socket.onmessage = (event) => {
-                const data = JSON.parse(event.data);
-                const transcriptText = data.transcription || "";
-                transcript.textContent += transcriptText;
-                console.log("Transcript:", transcriptText);
-            };
+        socket.onerror = (error) => {
+            console.error("WebSocket error:", error);
+        };
 
-            socket.onerror = (error) => {
-                console.error("WebSocket error:", error);
-                transcript.textContent += "[Error with WebSocket connection]";
-            };
+        socket.onclose = () => {
+            console.log("WebSocket connection closed");
+            stopRecording();
+        };
 
-            socket.onclose = () => {
-                console.log("WebSocket connection closed.");
-            };
-
-            // Collect audio chunks and send to WebSocket
-            mediaRecorder.ondataavailable = (event) => {
-                audioChunks.push(event.data);
-
-                // Convert the audio chunk to ArrayBuffer and send to the WebSocket server
-                const reader = new FileReader();
-                reader.onload = () => {
-                    if (socket.readyState === WebSocket.OPEN) {
-                        socket.send(reader.result); // Send raw audio bytes
-                    }
-                };
-                reader.readAsArrayBuffer(event.data);
-            };
-
-            mediaRecorder.onstop = () => {
-                console.log("Recording stopped.");
-                stopWebSocket();
-            };
-        })
-        .catch((error) => {
-            console.error("Error accessing microphone:", error);
-        });
+        // Start recording
+        mediaRecorder.start();
+    })
+    .catch((error) => {
+        console.error("Error accessing microphone:", error);
+    });
 }
 
-// Stop recording and close the WebSocket connection
+function startAudioChunking() {
+    recordingInterval = setInterval(() => {
+        if (mediaRecorder && mediaRecorder.state === "recording") {
+            mediaRecorder.stop();
+            mediaRecorder.start();
+        }
+    }, CHUNK_DURATION);
+
+    // Handle audio chunks
+    mediaRecorder.ondataavailable = async (event) => {
+        const audioBlob = event.data;
+        if (audioBlob.size > 0) {
+            try {
+                // Convert blob to array buffer
+                const arrayBuffer = await audioBlob.arrayBuffer();
+                
+                // Convert to 16-bit PCM
+                const audioContext = new AudioContext();
+                const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+                const float32Array = audioBuffer.getChannelData(0);
+                
+                // Send the audio data
+                if (socket && socket.readyState === WebSocket.OPEN) {
+                    socket.send(float32Array.buffer);
+                }
+                
+                audioContext.close();
+            } catch (error) {
+                console.error("Error processing audio:", error);
+            }
+        }
+    };
+}
+
 function stopRecording() {
+    if (recordingInterval) {
+        clearInterval(recordingInterval);
+        recordingInterval = null;
+    }
+    
     if (mediaRecorder && mediaRecorder.state === "recording") {
         mediaRecorder.stop();
     }
+    
+    if (socket && socket.readyState === WebSocket.OPEN) {
+        socket.close();
+    }
+
+    if (mediaRecorder) {
+        mediaRecorder.stream.getTracks().forEach(track => track.stop());
+        mediaRecorder = null;
+    }
 }
+
+function handleTranscription(data) {
+    const transcriptElement = document.querySelector('.transcript p');
+    if (transcriptElement) {
+        transcriptElement.textContent = data.complete_transcript;
+    }
+}
+
     /*async function processAudio() {
         const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
         const formData = new FormData();
@@ -383,13 +430,11 @@ function stopRecording() {
     });*/
     voiceCircle.addEventListener('click', () => {
         if (!isListening) {
-            // Start recording
             startRecording();
             isListening = true;
             voiceCircle.textContent = 'Speaking...';
             voiceCircle.classList.add('active');
         } else {
-            // Stop recording
             stopRecording();
             isListening = false;
             voiceCircle.textContent = 'AI is responding...';
