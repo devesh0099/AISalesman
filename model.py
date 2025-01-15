@@ -11,23 +11,6 @@ import random
 import time
 from stage_manager import StageManager
 
-# Global dictionary to store conversation states
-
-
-# Settings.embed_model = HuggingFaceEmbedding(model_name="BAAI/bge-large-en-v1.5")
-# Settings.llm = sambanova.SambanovaLLM()
-
-# pc = pinecone.Pinecone(api_key=os.environ.get("PINECONE_API"))
-
-# coaching_index = pc.Index("short")
-# conversation_index = pc.Index("customers")
-
-# coaching_store = PineconeVectorStore(coaching_index)
-# conversation_store = PineconeVectorStore(conversation_index)
-
-# coaching_query_engine = VectorStoreIndex.from_vector_store(coaching_store).as_query_engine(similarity_top_k=3)
-
-
 load_dotenv()
 '''
 structure:[stage:,context:,examples:,last_response:,current_que:]

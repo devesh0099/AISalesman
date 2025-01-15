@@ -108,64 +108,56 @@ def send_fake_audio(name):
             audio_path = dictionary["Vanshika"]["greeting"]
             return audio_path
 
-def  tts_file_func(response,name):
+def generate_unique_paths(response, name):
+    timestamp = int(time.time())
+    unique_id = f"{timestamp}_{name}_{hash(response)}"
+    wav_path = f"/gen/{unique_id}.wav"
+    config_path = f"/gen/config_{unique_id}.toml"
+    return wav_path, config_path
+
+def tts_file_func(response, name):
     dirname = os.path.dirname(__file__)
     dir = os.path.dirname(dirname)
+    wav_path, config_path = generate_unique_paths(response, name)
     
     matching_path = os.path.join(dir, 'data/vocals/matching.json')
-    config_path = os.path.join(dir, 'config.toml')
-    
-    with open(config_path, "r") as file:
-        config = toml.load(file)
-    
     with open(matching_path, "r") as file:
         matching = json.load(file)
 
-    config["gen_text"] = response
+    # Generate new config
+    config = {
+        "model": "F5-TTS",
+        "gen_text": response,
+        "gen_file": "",
+        "remove_silence": False,
+        "output_dir": os.path.join(dir, "gen"),
+        "output_file": os.path.basename(wav_path)
+    }
 
     match(name):
         case "Komal":
             config["ref_audio"] = matching["Komal"]["voice"]
             config["ref_text"] = matching["Komal"]["text"]
-            with open(config_path, "w") as file:
-                toml.dump(config, file)
-            tts_file.main()
-            return "/gen/infer_cli_basic.wav"
         case "Rajeev":
             config["ref_audio"] = dir + matching["Rajeev"]["voice"]
             config["ref_text"] = matching["Rajeev"]["text"]
-            with open(config_path, "w") as file:
-                toml.dump(config, file)
-            tts_file.main()
-            return "/gen/infer_cli_basic.wav"
         case "Sanjana":
             config["ref_audio"] = dir + matching["Sanjana"]["voice"]
             config["ref_text"] = matching["Sanjana"]["text"]
-            with open(config_path, "w") as file:
-                toml.dump(config, file)
-            tts_file.main()
-            return "/gen/infer_cli_basic.wav"
         case "Srishti":
             config["ref_audio"] = dir + matching["Srishti"]["voice"]
             config["ref_text"] = matching["Srishti"]["text"]
-            with open(config_path, "w") as file:
-                toml.dump(config, file)
-            tts_file.main()
-            return "/gen/infer_cli_basic.wav"
         case "Vansh":
             config["ref_audio"] = dir + matching["Vansh"]["voice"]
-            config["ref_text"] =  matching["Vansh"]["text"]
-            with open(config_path, "w") as file:
-                toml.dump(config, file)
-            tts_file.main()
-            return "/gen/infer_cli_basic.wav"
+            config["ref_text"] = matching["Vansh"]["text"]
         case "Vanshika":
             config["ref_audio"] = dir + matching["Vanshika"]["voice"]
             config["ref_text"] = matching["Vanshika"]["text"]
-            with open(config_path, "w") as file:
-                toml.dump(config, file)
-            tts_file.main()
-            return "/gen/infer_cli_basic.wav"
+            
+    with open(os.path.join(dir, config_path), "w") as file:
+        toml.dump(config, file)
+    tts_file.main()
+    return wav_path
 
 @app.websocket("/ws/generate-response/")
 async def generate_response(websocket: WebSocket):

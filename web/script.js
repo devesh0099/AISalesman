@@ -225,8 +225,8 @@ function createCallInterface(callType, scenario) {
             voiceCircle.classList.remove('ai');
         }
         if(data.path) {
-            print(data)
-            print(data.path)
+            console.log(data)
+            console.log(data.path)
             let audio = new Audio(data.path);
             audio.play();
             voiceCircle.textContent = 'Tap to Speak';

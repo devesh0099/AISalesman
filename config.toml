@@ -1,7 +1,7 @@
 model = "F5-TTS"
-ref_audio = "/home/hope/Files/Hackathon/AISalesman/data/vocals/Srishti_greeting.wav"
-ref_text = "Hey myself Srishti speaking from study centre. How are you today?"
-gen_text = "That's great to hear you're feeling well today. Now, let's talk about your academic goals and how we can support you in achieving them. What subjects do you find most challenging in your current preparation?"
+ref_audio = "/home/hope/Files/Hackathon/AISalesman/data/vocals/Vanshika_greeting.wav"
+ref_text = "Hello this is Vanshika speaking from study centre. Do you have a moment?"
+gen_text = "I'm glad you're interested in our courses. We offer a range of programs to suit different needs. What specific course or subject are you looking to pursue, and are you leaning towards online or offline classes?"
 gen_file = ""
 remove_silence = false
 output_dir = "gen"
