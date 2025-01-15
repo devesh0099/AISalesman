@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 HUGGINGFACE_API_TOKEN = os.environ.get("HUGGING_FACE_API")
-API_URL = "https://api-inference.huggingface.co/models/openai/whisper-base"
+API_URL = "https://api-inference.huggingface.co/models/openai/whisper-large-v3-turbo"
 headers = {"Authorization": f"Bearer {HUGGINGFACE_API_TOKEN}"}
 
 sample_rate = 16000
