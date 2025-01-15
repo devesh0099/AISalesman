@@ -15,15 +15,10 @@
         <div class="content">
             <section id="botSelector" class="section active">
                 <h2>Welcome to AI Cold Caller</h2>
-                <p>Choose your bot to get started:</p>
                 <div class="bot-options">
                     <button class="bot-option" data-bot-type="sales">
                         <h3>Sales Bot</h3>
                         <p>Perfect for pitching our education coaching center</p>
-                    </button>
-                    <button class="bot-option" data-bot-type="lead">
-                        <h3>Lead Bot</h3>
-                        <p>Ideal for various lead generation scenarios</p>
                     </button>
                 </div>
             </section>
@@ -38,33 +33,9 @@
                 </ul>
                 <button id="startSalesCall">Start Sales Call</button>
             </section>
-            <section id="leadBot" class="section">
-                <h2>Lead Bot</h2>
-                <div class="scenario-cards">
-                    <!-- Scenario cards will be dynamically added here -->
-                </div>
-                <div class="scenario-card custom-scenario">
-                    <div class="add-custom">
-                        <span class="plus-sign">+</span>
-                        <p>Add Custom Scenario</p>
-                    </div>
-                    <form id="customScenarioForm" style="display: none;">
-                        <input type="text" id="customName" placeholder="Name" required>
-                        <input type="text" id="customReason" placeholder="Reason" required>
-                        <textarea id="customDescription" placeholder="Description" required></textarea>
-                        <input type="tel" id="customPhone" placeholder="Phone Number" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" required>
-                        <small>Format: 123-456-7890</small>
-                        <button type="submit">Start Custom Call</button>
-                    </form>
-                </div>
-            </section>
             <section id="callManager" class="section">
                 <div class="call-controls">
-                    <button id="addSalesCall" class="add-call">+ Sales Call</button>
-                    <button id="addLeadCall" class="add-call">+ Lead Call</button>
-                </div>
-                <div id="leadOptions" class="lead-options" style="display: none;">
-                    <!-- Lead options will be dynamically added here -->
+                    <!-- Buttons for multi-call functionality hidden -->
                 </div>
                 <div id="activeCalls" class="active-calls">
                     <!-- Active calls will be dynamically added here -->

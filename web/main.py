@@ -108,35 +108,26 @@ def send_fake_audio(name):
             audio_path = dictionary["Vanshika"]["greeting"]
             return audio_path
 
-def generate_unique_paths(response, name):
-    timestamp = int(time.time())
-    unique_id = f"{timestamp}_{name}_{hash(response)}"
-    wav_path = f"/gen/{unique_id}.wav"
-    config_path = f"/gen/config_{unique_id}.toml"
-    return wav_path, config_path
-
 def tts_file_func(response, name):
     dirname = os.path.dirname(__file__)
     dir = os.path.dirname(dirname)
-    wav_path, config_path = generate_unique_paths(response, name)
+    unique_filename = f"{int(time.time())}_{name}_{hash(response)}.wav"
+    output_path = f"/gen/{unique_filename}"
     
     matching_path = os.path.join(dir, 'data/vocals/matching.json')
+    config_path = os.path.join(dir, 'config.toml')
+    
+    with open(config_path, "r") as file:
+        config = toml.load(file)
+    
     with open(matching_path, "r") as file:
         matching = json.load(file)
 
-    # Generate new config
-    config = {
-        "model": "F5-TTS",
-        "gen_text": response,
-        "gen_file": "",
-        "remove_silence": False,
-        "output_dir": os.path.join(dir, "gen"),
-        "output_file": os.path.basename(wav_path)
-    }
+    config["gen_text"] = response
 
     match(name):
         case "Komal":
-            config["ref_audio"] = matching["Komal"]["voice"]
+            config["ref_audio"] = dir  + matching["Komal"]["voice"]
             config["ref_text"] = matching["Komal"]["text"]
         case "Rajeev":
             config["ref_audio"] = dir + matching["Rajeev"]["voice"]
@@ -153,11 +144,12 @@ def tts_file_func(response, name):
         case "Vanshika":
             config["ref_audio"] = dir + matching["Vanshika"]["voice"]
             config["ref_text"] = matching["Vanshika"]["text"]
-            
-    with open(os.path.join(dir, config_path), "w") as file:
+    config["output_file"] = unique_filename
+    with open(config_path, "w") as file:
         toml.dump(config, file)
     tts_file.main()
-    return wav_path
+    return output_path
+
 
 @app.websocket("/ws/generate-response/")
 async def generate_response(websocket: WebSocket):
