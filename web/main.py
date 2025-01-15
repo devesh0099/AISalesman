@@ -121,7 +121,7 @@ def  tts_file(response,name):
     with open(matching_path, "r") as file:
         matching = json.load(file)
 
-    config["gen_text"] = "This is the updated generated text."
+    config["gen_text"] = response
 
     match(name):
         case "Komal":
@@ -197,10 +197,11 @@ async def generate_response(websocket: WebSocket):
                 );
     
     except WebSocketDisconnect:
-        model.cleanup_conversation(conversation_id)
+        print("LLM Disconnect ")
+        # model.cleanup_conversation(conversation_id)
     except Exception as e:
         print(f"Error in conversation: {e}")
-        model.cleanup_conversation(conversation_id)
+        # model.cleanup_conversation(conversation_id)
         await websocket.close()
 
 
