@@ -1,0 +1,26 @@
+{
+    "Komal":{
+        "voice":"/vocals/Komal.wav",
+        "greeting":"/vocals/Komal_greeting.wav"
+    },
+    "Rajeev":{
+        "voice":"/vocals/Rajeev.wav",
+        "greeting":"/vocals/Rajeev_greeting.wav"
+    },
+    "Sanjana":{
+        "voice":"/vocals/Sanjana.wav",
+        "greeting":"/vocals/Sanjana_greeting.wav"
+    },
+    "Srishti":{
+        "voice":"/vocals/Srishti.wav",
+        "greeting":"/vocals/Srishti_greeting.wav"
+    },
+    "Vansh":{  
+        "voice":"/vocals/Vansh.wav",
+        "greeting":"/vocals/Vansh_greeting.wav"
+    },
+    "Vanshika":{    
+        "voice":"/vocals/Vanshika.wav",
+        "greeting":"/vocals/Vanshika_greeting.wav"
+    }
+}

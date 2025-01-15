@@ -10,7 +10,7 @@ class ConversationStage(Enum):
 
 class StageManager:
     def __init__(self):
-        self.current_stage = ConversationStage.GREETING
+        self.current_stage = ConversationStage.QUALIFICATION
         self.qualification_count = 0
         self.required_qualifications = 1
         

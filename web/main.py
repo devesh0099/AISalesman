@@ -5,10 +5,11 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from gtts import gTTS
-import base64
-from typing import List
+from typing import Dict
 import time
 from liveTranscription import transcribe_audio
+import model
+import json
 
 app = FastAPI()
 
@@ -21,57 +22,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Mount static files
-# app.mount("/", StaticFiles(directory="web", html=True), name="static")
-
 # Store complete transcripts for each session
-session_transcripts: dict = {}
+session_transcripts: Dict = {}
 
-# @app.websocket("/ws/speech-to-text/")
-# async def websocket_endpoint(websocket: WebSocket):
-#     # print("Done here called")
-#     await websocket.accept()
-#     session_id = str(time.time())  # Create unique session ID
-#     session_transcripts[session_id] = []
-    
-#     try:
-#         while True:
-#             # Receive audio chunk
-#             audio_data = await websocket.receive_bytes()
-            
-#             # Convert audio bytes to numpy array
-#             audio_array = np.frombuffer(audio_data, dtype=np.float32)
-            
-            
-#             # Get transcription for this chunk
-            
-#             transcript_chunk = transcribe_audio(audio_array)
-            
+#Multiple Calls conversation state
+conversation_states = {}
 
-#             if transcript_chunk:
-#                 # Add to session transcript
-#                 session_transcripts[session_id].append(transcript_chunk)
-                
-#                 # Send back current transcription
-                
-#                 await websocket.send_json({
-#                     "transcription": transcript_chunk,
-#                     "complete_transcript": " ".join(session_transcripts[session_id])
-#                 })
-
-#     except WebSocketDisconnect:
-#         print(f"Client disconnected, session {session_id}")
-#         # Clean up session data
-#         if session_id in session_transcripts:
-#             complete_transcript = " ".join(session_transcripts[session_id])
-#             del session_transcripts[session_id]
-#             return complete_transcript
-
-#     except Exception as e:
-#         print(f"Error occurred: {e}")
-#         await websocket.close(code=1000)
-#         if session_id in session_transcripts:
-#             del session_transcripts[session_id]
 @app.websocket("/ws/speech-to-text/")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
@@ -118,41 +74,83 @@ async def websocket_endpoint(websocket: WebSocket):
             del session_transcripts[session_id]
         await websocket.close
 
+def send_fake_audio(name):
+    dictionary = {}
+    audio_path = ""
+    dirname = os.path.dirname(__file__)
+    dir = os.path.dirname(dirname)
+    filename = os.path.join(dir, 'data/vocals/matching.json')
+    print(filename)
 
-# @app.websocket("/ws/speech-to-text/")
-# async def websocket_endpoint(websocket: WebSocket):
-#     await websocket.accept()
-#     session_transcripts = []
+    with open(filename, 'r') as file:
+        dictionary = json.load(file)
+    match(name):
+        case "Komal":
+            audio_path = dictionary["Komal"]["greeting"]
+            return audio_path
+        case "Rajeev":
+            audio_path = dictionary["Rajeev"]["greeting"]
+            return audio_path
+        case "Sanjana":
+            audio_path = dictionary["Sanjana"]["greeting"]
+            return audio_path
+        case "Srishti":
+            audio_path = dictionary["Srishti"]["greeting"]
+            return audio_path
+        case "Vansh":
+            audio_path = dictionary["Vansh"]["greeting"]
+            return audio_path
+        case "Vanshika":
+            audio_path = dictionary["Vanshika"]["greeting"]
+            return audio_path
 
-#     try:
-#         while True:
-#             # Receive audio data
-#             audio_data = await websocket.receive_bytes()
+@app.websocket("/ws/generate-response/")
+async def generate_response(websocket: WebSocket):
+    await websocket.accept()
+    conversation_id = str(time.time())
+    response:str = ""
+    state = None
+    try:
+        while True:
+            transcriptText = await websocket.receive_text()
+            obj = json.loads(transcriptText)
+            print(obj['text'])
+            state = conversation_states.get(conversation_id)
+            if not state:
+                print("new user")
+                conversation_states[conversation_id] = model.ConversationState()
+                state = conversation_states.get(conversation_id)
+                # First message - initialize conversation
+                # state = model.main(conversation_id)
+                # response = str(model.main(conversation_id, transcriptText))    
+                # Subsequent messages - use existing state
+                name = state.fake_greeting()
+                path = send_fake_audio(name)
+                await websocket.send_json(
+                    {
+                        "path":path,
+                        "type":"path"
+                    }
+                );
+            else:
+                response = str(state.structure_forming(obj['text']))
+                print(response)
+                await websocket.send_json(
+                    {
+                        "response":response,
+                        "type":"response"
+                    }
+                );
+    
+    except WebSocketDisconnect:
+        model.cleanup_conversation(conversation_id)
+    except Exception as e:
+        print(f"Error in conversation: {e}")
+        model.cleanup_conversation(conversation_id)
+        await websocket.close()
 
-#             # Convert to NumPy array
-#             audio_array = np.frombuffer(audio_data, dtype=np.float32)
 
-#             # Process and transcribe
-#             if len(audio_array) > 0:
-#                 transcription = transcribe_audio(audio_array)
-#                 if transcription:
-#                     session_transcripts.append(transcription)
-#                     await websocket.send_json({
-#                         "transcription": transcription,
-#                         "complete_transcript": " ".join(session_transcripts)
-#                     })
-#     except WebSocketDisconnect:
-#         print("Client disconnected")
-
-
-@app.post("/generate-response/")
-async def generate_response(input_text: str = Form(...)):
-    # Assuming you are using some model to generate the response text
-    response = response_generator_model(input_text, max_length=150, num_return_sequences=1)
-    return {"response": response[0]["generated_text"]}
-
-
-@app.post("/text-to-speech/")
+@app.post("/ws/text-to-speech/")
 async def text_to_speech(response_text: str = Form(...)):
     tts = gTTS(response_text)
     output_file = os.path.join("text_to_speech_folder", "response.mp3")
@@ -164,4 +162,6 @@ async def read_root():
     return FileResponse('web/index.html')
 
 # Mount static files for other assets
+
 app.mount("/static", StaticFiles(directory="web"), name="static")
+app.mount("/vocals", StaticFiles(directory="data/vocals"), name="vocals")

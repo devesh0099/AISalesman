@@ -33,6 +33,8 @@ class SambanovaLLM(CustomLLM):
             personas = json.load(file)["personas"]
         return random.choice(personas)
 
+    def return_name(self):
+        return self.persona["name"]
 
     @property
     def metadata(self) -> LLMMetadata:

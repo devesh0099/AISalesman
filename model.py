@@ -11,149 +11,202 @@ import random
 import time
 from stage_manager import StageManager
 
+# Global dictionary to store conversation states
+
+
+# Settings.embed_model = HuggingFaceEmbedding(model_name="BAAI/bge-large-en-v1.5")
+# Settings.llm = sambanova.SambanovaLLM()
+
+# pc = pinecone.Pinecone(api_key=os.environ.get("PINECONE_API"))
+
+# coaching_index = pc.Index("short")
+# conversation_index = pc.Index("customers")
+
+# coaching_store = PineconeVectorStore(coaching_index)
+# conversation_store = PineconeVectorStore(conversation_index)
+
+# coaching_query_engine = VectorStoreIndex.from_vector_store(coaching_store).as_query_engine(similarity_top_k=3)
+
 
 load_dotenv()
 '''
 structure:[stage:,context:,examples:,last_response:,current_que:]
 '''
 
-Settings.embed_model = HuggingFaceEmbedding(model_name="BAAI/bge-large-en-v1.5")
-Settings.llm = sambanova.SambanovaLLM()
+class ConversationState:
+    def __init__(self):
+        load_dotenv()
+        
+        # Initialize all the existing components
+        Settings.embed_model = HuggingFaceEmbedding(model_name="BAAI/bge-large-en-v1.5")
+        Settings.llm = sambanova.SambanovaLLM()
+        
+        self.pc = pinecone.Pinecone(api_key=os.environ.get("PINECONE_API"))
+        self.coaching_index = self.pc.Index("short")
+        self.conversation_index = self.pc.Index("customers")
+        self.coaching_store = PineconeVectorStore(self.coaching_index)
+        self.conversation_store = PineconeVectorStore(self.conversation_index)
+        self.coaching_query_engine = VectorStoreIndex.from_vector_store(self.coaching_store).as_query_engine(similarity_top_k=3)
+        self.stage_manager = StageManager()
+        self.customer_id = str(random.randint(1, 10000000000))
 
-pc = pinecone.Pinecone(api_key=os.environ.get("PINECONE_API"))
+    def load_json(self, file_path: str):
+        with open(file_path, 'r') as file:
+            return json.load(file)
 
-coaching_index = pc.Index("short")
-conversation_index = pc.Index("customers")
+    def store_conversation(self, message, is_user=True):
+        doc = Document(
+            text=message,
+            metadata={
+                "customer_id": self.customer_id,
+                "timestamp": str(time.time()),
+                "type": "user" if is_user else "agent"
+            }
+        )
+        conversation_index = VectorStoreIndex.from_vector_store(self.conversation_store)
+        conversation_index.insert(doc)
 
-coaching_store = PineconeVectorStore(coaching_index)
-conversation_store = PineconeVectorStore(conversation_index)
+    def get_conversation_context(self, query):
+        # Create an embedding for the current query
+        query_embedding = Settings.embed_model._embed(query)
+        
+        # Query the conversation index with the embedding
+        query_response = self.conversation_index.query(
+            vector=query_embedding,
+            filter={"customer_id": {"$eq": self.customer_id}},
+            top_k=8,  # Fetch more to filter later
+            include_metadata=True
+        )
+        
+        # Sort matches based on relevance (similarity score)
+        relevant_conversations = sorted(query_response.matches, key=lambda x: x.score, reverse=True)
+        
+        # Select top N relevant conversations
+        top_relevant_conversations = relevant_conversations[:6]
+        
+        return " ".join(json.loads(m.metadata['_node_content'])["text"] for m in top_relevant_conversations)
 
-coaching_query_engine = VectorStoreIndex.from_vector_store(coaching_store).as_query_engine(similarity_top_k=3)
+
+    def get_examples(self, stage) -> str:
+        match(stage):
+            case "greeting":
+                greetings = self.load_json("data/examples_of_stages/greetings.json")
+                greeting_texts = [greeting['text'] for greeting in greetings['greetings']]
+                array = random.sample(greeting_texts, 2)
+                result = f"[{array[0]} or {array[1]}]"
+                return result
+            case "pitching":
+                pitching = self.load_json("data/examples_of_stages/pitch.json")
+                pitching_texts = [pitching_text['text'] for pitching_text in pitching["pitching"]]
+                array = random.sample(pitching_texts,2)
+                result = f"[{array[0]} or {array[1]}]"
+                return result
+            case "qualification_questions":
+                qualification_questions = self.load_json("data/examples_of_stages/qualification.json")
+                qualification_texts =  [questions['question'] for questions in qualification_questions["qualification"]]
+                array = random.sample(qualification_texts,4)
+                result = f"[{array[0]} or {array[1]} or {array[2]} or {array[3]}]"
+                return result
+            case "objection_handling":
+                objection_handling = self.load_json("data/examples_of_stages/objection_handling.json")
+                #Skipped for now
+            case "closing":
+                closing = self.load_json("data/examples_of_stages/closing.json")
+                closing_texts =  [texts['text'] for texts in closing["closing"]]
+                array = random.sample(closing_texts,2)
+                result = f"[{array[0]} or {array[1]}]"
+                return result
 
 
-def load_json(file_path: str):
-    with open(file_path, 'r') as file:
-        return json.load(file)
+    def get_coaching_context(self, query: str):
+        response = self.coaching_index.query(
+            vector=Settings.embed_model._embed(query),
+            top_k=2,
+            include_metadata=True
+        )
+        
+        relevant_docs = sorted(response.matches, key=lambda x: x.score, reverse=True)
+        return " ".join(json.loads(m.metadata['_node_content'])["text"] for m in relevant_docs)
 
 
-def store_conversation(customer_id, message, is_user=True):
-    doc = Document(
-        text=message,
-        metadata={
-            "customer_id": customer_id,
-            "timestamp": str(time.time()),
-            "type": "user" if is_user else "agent"
-        }
-    )
-    conversation_index = VectorStoreIndex.from_vector_store(conversation_store)
-    conversation_index.insert(doc)
+    def structure_forming(self, query):
+        stage = self.stage_manager.get_current_stage()
+        examples = self.get_examples(stage)
+        last_responses = self.get_conversation_context(query)
+        self.store_conversation(query, is_user=True)
+        context = self.get_coaching_context(query)
+        # if not hasattr(structure_forming, 'stage_manager'):
+        #     structure_forming.stage_manager = StageManager()
 
-def get_conversation_context(customer_id, query):
-    # Create an embedding for the current query
-    query_embedding = Settings.embed_model._embed(query)
+        # stage = structure_forming.stage_manager.get_current_stage()
+
+        # # GET EXAMPLES
+        # examples = get_examples(stage)
+
+        # # GET LAST RESPONSES
+        # last_responses = get_conversation_context(customer_id, query)
+        # store_conversation(customer_id, query, is_user=True)
+
+        # # NOW RETRIEVE CONTEXT
+        # context = get_coaching_context(query)
+
+        s = f"[stage:{stage}, context:{context}, examples:{examples}, last_response:{last_responses}, current_que:{query}]"
+
+        # Get current stage and update based on query
+        stage = self.stage_manager.update_stage(query)
+
+        print("")
+        print(s + " " + self.customer_id)
+        print("")
+
+        response = Settings.llm.complete(prompt=s)
+        self.store_conversation(str(response), is_user=False)
+        return response
     
-    # Query the conversation index with the embedding
-    query_response = conversation_index.query(
-        vector=query_embedding,
-        filter={"customer_id": {"$eq": customer_id}},
-        top_k=8,  # Fetch more to filter later
-        include_metadata=True
-    )
-    
-    # Sort matches based on relevance (similarity score)
-    relevant_conversations = sorted(query_response.matches, key=lambda x: x.score, reverse=True)
-    
-    # Select top N relevant conversations
-    top_relevant_conversations = relevant_conversations[:6]
-    
-    return " ".join(json.loads(m.metadata['_node_content'])["text"] for m in top_relevant_conversations)
-
-
-def get_examples(stage) -> str:
-    match(stage):
-        case "greeting":
-            greetings = load_json("data/examples_of_stages/greetings.json")
-            greeting_texts = [greeting['text'] for greeting in greetings['greetings']]
-            array = random.sample(greeting_texts, 2)
-            result = f"[{array[0]} or {array[1]}]"
-            return result
-        case "pitching":
-            pitching = load_json("data/examples_of_stages/pitch.json")
-            pitching_texts = [pitching_text['text'] for pitching_text in pitching["pitching"]]
-            array = random.sample(pitching_texts,2)
-            result = f"[{array[0]} or {array[1]}]"
-            return result
-        case "qualification_questions":
-            qualification_questions = load_json("data/examples_of_stages/qualification.json")
-            qualification_texts =  [questions['question'] for questions in qualification_questions["qualification"]]
-            array = random.sample(qualification_texts,4)
-            result = f"[{array[0]} or {array[1]} or {array[2]} or {array[3]}]"
-            return result
-        case "objection_handling":
-            objection_handling = load_json("data/examples_of_stages/objection_handling.json")
-            #Skipped for now
-        case "closing":
-            closing = load_json("data/examples_of_stages/closing.json")
-            closing_texts =  [texts['text'] for texts in closing["closing"]]
-            array = random.sample(closing_texts,2)
-            result = f"[{array[0]} or {array[1]}]"
-            return result
-
-
-def get_coaching_context(query: str):
-    response = coaching_index.query(
-        vector=Settings.embed_model._embed(query),
-        top_k=2,
-        include_metadata=True
-    )
-    
-    relevant_docs = sorted(response.matches, key=lambda x: x.score, reverse=True)
-    return " ".join(json.loads(m.metadata['_node_content'])["text"] for m in relevant_docs)
-
-
-def structure_forming(customer_id, query):
-    # Initialize stage manager if not already done
-    if not hasattr(structure_forming, 'stage_manager'):
-        structure_forming.stage_manager = StageManager()
-
-    stage = structure_forming.stage_manager.get_current_stage()
-
-    # GET EXAMPLES
-    examples = get_examples(stage)
-
-    # GET LAST RESPONSES
-    last_responses = get_conversation_context(customer_id, query)
-    store_conversation(customer_id, query, is_user=True)
-
-    # NOW RETRIEVE CONTEXT
-    context = get_coaching_context(query)
-
-    s = f"[stage:{stage}, context:{context}, examples:{examples}, last_response:{last_responses}, current_que:{query}]"
-
-    # Get current stage and update based on query
-    stage = structure_forming.stage_manager.update_stage(query)
-
-    print("")
-    # print(s)
-    print("")
-
-    response = Settings.llm.complete(prompt=s)
-    store_conversation(customer_id, str(response), is_user=False)
-    return response
+    def fake_greeting(self):
+        self.store_conversation("Hello, who is this speaking?", is_user=True)
+        self.name = Settings.llm.return_name()
+        self.store_conversation(f"Hello, This is {self.name} speaking from study centre.Do you have a moment?", is_user=True)
+        return self.name
 
 
 
-customer_id = "12312211451234412123454321"
-while True:
-    query = input("Customer: ")
-    response = structure_forming(customer_id, query)
-    print("System: " + str(response))
+# customer_id = "12312211451234412123454321"
+# while True:
+#     query = input("Customer: ")
+#     response = structure_forming(customer_id, query)
+#     print("System: " + str(response))
 
+# def get_response(customer_id,query):
+#     response = structure_forming(customer_id,query);
+#     return response;
 
 # def main(query):
+#     customer_id = random.randint(1,10000000000);
+#     res = get_response(customer_id,query);
+#     return res;
 
 #     customer_id = str(random.randint(1,1000000000))
 #     # print("Customer: "+ query)
 #     response = structure_forming(customer_id, query)
 #     return response
 #     # print("System: " + str(response))
+
+# def initialize_conversation(conversation_id: str):
+#     conversation_states[conversation_id] = ConversationState()
+#     return conversation_states[conversation_id]
+
+# def get_conversation_state(conversation_id: str):
+#     return conversation_states.get(conversation_id)
+
+# def cleanup_conversation(conversation_id: str):
+#     if conversation_id in conversation_states:
+#         del conversation_states[conversation_id]
+
+# def main(conversation_id: str, query: str):
+#     state = get_conversation_state(conversation_id)
+#     if not state:
+#         state = initialize_conversation(conversation_id)
+#     return state
+    # response = state.structure_forming(query)
+    # return response
