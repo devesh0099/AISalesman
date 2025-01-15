@@ -108,7 +108,7 @@ def send_fake_audio(name):
             audio_path = dictionary["Vanshika"]["greeting"]
             return audio_path
 
-def  tts_file(response,name):
+def  tts_file_func(response,name):
     dirname = os.path.dirname(__file__)
     dir = os.path.dirname(dirname)
     
@@ -187,7 +187,7 @@ async def generate_response(websocket: WebSocket):
             else:
                 name = conversation_name.get(conversation_id)
                 response = str(state.structure_forming(obj['text']))
-                audio = tts_file(response,name)
+                audio = tts_file_func(response,name)
                 await websocket.send_json(
                     {
                         "response":response,
