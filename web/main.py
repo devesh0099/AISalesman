@@ -10,6 +10,8 @@ import time
 from liveTranscription import transcribe_audio
 import model
 import json
+import tts_file
+import toml
 
 app = FastAPI()
 
@@ -27,6 +29,8 @@ session_transcripts: Dict = {}
 
 #Multiple Calls conversation state
 conversation_states = {}
+
+conversation_name = {}
 
 @app.websocket("/ws/speech-to-text/")
 async def websocket_endpoint(websocket: WebSocket):
@@ -80,7 +84,7 @@ def send_fake_audio(name):
     dirname = os.path.dirname(__file__)
     dir = os.path.dirname(dirname)
     filename = os.path.join(dir, 'data/vocals/matching.json')
-    print(filename)
+    # print(filename)
 
     with open(filename, 'r') as file:
         dictionary = json.load(file)
@@ -104,6 +108,53 @@ def send_fake_audio(name):
             audio_path = dictionary["Vanshika"]["greeting"]
             return audio_path
 
+def  tts_file(response,name):
+    dirname = os.path.dirname(__file__)
+    dir = os.path.dirname(dirname)
+    
+    matching_path = os.path.join(dir, 'data/vocals/matching.json')
+    config_path = os.path.join(dir, 'config.toml')
+    
+    with open(config_path, "r") as file:
+        config = toml.load(file)
+    
+    with open(matching_path, "r") as file:
+        matching = json.load(file)
+
+    config["gen_text"] = "This is the updated generated text."
+
+    match(name):
+        case "Komal":
+            config["ref_audio"] = matching["Komal"]["greeting"]
+            config["ref_text"] = matching["Komal"]["text"]
+            tts_file.main()
+            return dir+"/gen/infer_cli_basic.wav"
+        case "Rajeev":
+            config["ref_audio"] = matching["Rajeev"]["greeting"]
+            config["ref_text"] = matching["Rajeev"]["text"]
+            tts_file.main()
+            return dir+"/gen/infer_cli_basic.wav"
+        case "Sanjana":
+            config["ref_audio"] = matching["Sanjana"]["greeting"]
+            config["ref_text"] = matching["Sanjana"]["text"]
+            tts_file.main()
+            return dir+"/gen/infer_cli_basic.wav"
+        case "Srishti":
+            config["ref_audio"] = matching["Srishti"]["greeting"]
+            config["ref_text"] = matching["Srishti"]["text"]
+            tts_file.main()
+            return dir+"/gen/infer_cli_basic.wav"
+        case "Vansh":
+            config["ref_audio"] = matching["Vansh"]["greeting"]
+            config["ref_text"] =  matching["Vansh"]["text"]
+            tts_file.main()
+            return dir+"/gen/infer_cli_basic.wav"
+        case "Vanshika":
+            config["ref_audio"] = matching["Vanshika"]["greeting"]
+            config["ref_text"] = matching["Vanshika"]["text"]
+            tts_file.main()
+            return dir+"/gen/infer_cli_basic.wav"
+
 @app.websocket("/ws/generate-response/")
 async def generate_response(websocket: WebSocket):
     await websocket.accept()
@@ -126,6 +177,7 @@ async def generate_response(websocket: WebSocket):
                 # Subsequent messages - use existing state
                 name = state.fake_greeting()
                 path = send_fake_audio(name)
+                conversation_name[conversation_id] = name
                 await websocket.send_json(
                     {
                         "path":path,
@@ -133,11 +185,13 @@ async def generate_response(websocket: WebSocket):
                     }
                 );
             else:
+                name = conversation_name.get(conversation_id)
                 response = str(state.structure_forming(obj['text']))
-                print(response)
+                audio = tts_file(response,name)
                 await websocket.send_json(
                     {
                         "response":response,
+                        "audio":audio,
                         "type":"response"
                     }
                 );
@@ -165,3 +219,4 @@ async def read_root():
 
 app.mount("/static", StaticFiles(directory="web"), name="static")
 app.mount("/vocals", StaticFiles(directory="data/vocals"), name="vocals")
+app.mount("/gen",StaticFiles(directory="data/vocals"), name="gen")

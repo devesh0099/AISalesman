@@ -175,6 +175,7 @@ tenacity==9.0.0
 threadpoolctl==3.5.0
 tiktoken==0.8.0
 tokenizers==0.21.0
+toml
 tomli==2.2.1
 tomlkit==0.13.2
 torch==2.5.1
