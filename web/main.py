@@ -219,4 +219,4 @@ async def read_root():
 
 app.mount("/static", StaticFiles(directory="web"), name="static")
 app.mount("/vocals", StaticFiles(directory="data/vocals"), name="vocals")
-app.mount("/gen",StaticFiles(directory="data/vocals"), name="gen")
+app.mount("/gen",StaticFiles(directory="gen"), name="gen")

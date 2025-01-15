@@ -213,7 +213,8 @@ function createCallInterface(callType, scenario) {
         const aiResponseElement = document.querySelector('.ai-response p');
         const voiceCircle = document.querySelector('.voice-circle');
         if (data.response) {
-
+            let audio = new Audio(data.audio)
+            audio.play()
             const responseText = typeof data.response === 'object' ? 
             data.response.text || data.response.toString() : 
             data.response;
