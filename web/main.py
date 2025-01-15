@@ -125,33 +125,45 @@ def  tts_file_func(response,name):
 
     match(name):
         case "Komal":
-            config["ref_audio"] = matching["Komal"]["greeting"]
+            config["ref_audio"] = matching["Komal"]["voice"]
             config["ref_text"] = matching["Komal"]["text"]
+            with open(config_path, "w") as file:
+                toml.dump(config, file)
             tts_file.main()
             return dir+"/gen/infer_cli_basic.wav"
         case "Rajeev":
-            config["ref_audio"] = matching["Rajeev"]["greeting"]
+            config["ref_audio"] = dir + matching["Rajeev"]["voice"]
             config["ref_text"] = matching["Rajeev"]["text"]
+            with open(config_path, "w") as file:
+                toml.dump(config, file)
             tts_file.main()
             return dir+"/gen/infer_cli_basic.wav"
         case "Sanjana":
-            config["ref_audio"] = matching["Sanjana"]["greeting"]
+            config["ref_audio"] = dir + matching["Sanjana"]["voice"]
             config["ref_text"] = matching["Sanjana"]["text"]
+            with open(config_path, "w") as file:
+                toml.dump(config, file)
             tts_file.main()
             return dir+"/gen/infer_cli_basic.wav"
         case "Srishti":
-            config["ref_audio"] = matching["Srishti"]["greeting"]
+            config["ref_audio"] = dir + matching["Srishti"]["voice"]
             config["ref_text"] = matching["Srishti"]["text"]
+            with open(config_path, "w") as file:
+                toml.dump(config, file)
             tts_file.main()
             return dir+"/gen/infer_cli_basic.wav"
         case "Vansh":
-            config["ref_audio"] = matching["Vansh"]["greeting"]
+            config["ref_audio"] = dir + matching["Vansh"]["voice"]
             config["ref_text"] =  matching["Vansh"]["text"]
+            with open(config_path, "w") as file:
+                toml.dump(config, file)
             tts_file.main()
             return dir+"/gen/infer_cli_basic.wav"
         case "Vanshika":
-            config["ref_audio"] = matching["Vanshika"]["greeting"]
+            config["ref_audio"] = dir + matching["Vanshika"]["voice"]
             config["ref_text"] = matching["Vanshika"]["text"]
+            with open(config_path, "w") as file:
+                toml.dump(config, file)
             tts_file.main()
             return dir+"/gen/infer_cli_basic.wav"
 

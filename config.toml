@@ -1,10 +1,7 @@
-# F5-TTS | E2-TTS
 model = "F5-TTS"
-ref_audio = "aravind.wav"
-# If an empty "", transcribes the reference audio automatically.
-ref_text = "True joy comes from living authentically, embracing who you are, and sharing your unique gifts with the world.."
-gen_text = "Hello this is aravind from study centre."
-# File with text to generate. Ignores the text above.
+ref_audio = "/home/hope/Files/Hackathon/AISalesman/data/vocals/Srishti_greeting.wav"
+ref_text = "Hey myself Srishti speaking from study centre. How are you today?"
+gen_text = "That's great to hear you're feeling well today. Now, let's talk about your academic goals and how we can support you in achieving them. What subjects do you find most challenging in your current preparation?"
 gen_file = ""
 remove_silence = false
 output_dir = "gen"

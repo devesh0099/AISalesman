@@ -1,31 +1,31 @@
 {
     "Komal":{
-        "voice":"/vocals/Komal.wav",
+        "voice":"/data/vocals/Komal_greeting.wav",
         "greeting":"/vocals/Komal_greeting.wav",
         "text":"Hello I am Komal from study centre. Do you have a moment?"
     },
     "Rajeev":{
-        "voice":"/vocals/Rajeev.wav",
+        "voice":"/data/vocals/Rajeev_greeting.wav",
         "greeting":"/vocals/Rajeev_greeting.wav",
         "text":"Hello I am Rajeev from study centre. Do you have a moment?"
     },
     "Sanjana":{
-        "voice":"/vocals/Sanjana.wav",
+        "voice":"/data/vocals/Sanjana_greeting.wav",
         "greeting":"/vocals/Sanjana_greeting.wav",
         "text":"Hey, I am Sanjana Speaking from Study Centre. How are you doing today?"
     },
     "Srishti":{
-        "voice":"/vocals/Srishti.wav",
+        "voice":"/data/vocals/Srishti_greeting.wav",
         "greeting":"/vocals/Srishti_greeting.wav",
         "text":"Hey myself Srishti speaking from study centre. How are you today?"
     },
     "Vansh":{  
-        "voice":"/vocals/Vansh.wav",
+        "voice":"/data/vocals/Vansh_greeting.wav",
         "greeting":"/vocals/Vansh_greeting.wav",
         "text":"Hello, myself Vansh speaking from study centre. Do you have a moment?"
     },
     "Vanshika":{    
-        "voice":"/vocals/Vanshika.wav",
+        "voice":"/data/vocals/Vanshika_greeting.wav",
         "greeting":"/vocals/Vanshika_greeting.wav",
         "text":"Hello this is Vanshika speaking from study centre. Do you have a moment?"
     }
