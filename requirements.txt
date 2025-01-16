@@ -7,7 +7,6 @@ Beaker
 beautifulsoup4
 bleach
 blivet
-blivet-gui
 boto3
 botocore
 Brlapi
