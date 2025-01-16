@@ -106,5 +106,5 @@ Follow these steps to install and run the AI Salesman:
 
 ## License
 
-📜 This project is licensed under the **  GNU GENERAL PUBLIC LICENSE v3.0**.  
+📜 This project is licensed under the **GNU GENERAL PUBLIC LICENSE v3.0**.  
 See the `LICENSE` file for additional details.
