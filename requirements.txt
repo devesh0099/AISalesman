@@ -33,6 +33,7 @@ fb-re2
 fedora-third-party
 file-magic
 fros
+gtts
 humanize
 i3ipc
 idna
