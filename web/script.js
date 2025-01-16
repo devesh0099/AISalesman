@@ -160,6 +160,10 @@ function createCallInterface(callType, scenario) {
         
         conversationSocket.onopen = () => {
             console.log("LLM WebSocket connected");
+            conversationSocket.send(JSON.stringify({
+                type: "transcript",
+                text: "Hello, who is this?"
+            }));
         };
         
         conversationSocket.onmessage = (event) => {
@@ -193,6 +197,7 @@ function createCallInterface(callType, scenario) {
             voiceCircle.classList.remove('ai');
         }
         if(data.path) {
+            console.log(data.path)
             let audio = new Audio(data.path);
             audio.play();
             voiceCircle.textContent = 'Tap to Speak';
@@ -207,12 +212,6 @@ function createCallInterface(callType, scenario) {
         if (!isListening) {
             if (!conversationSocket) {
                 initializeConversation();
-                setTimeout(function(){
-                    conversationSocket.send(JSON.stringify({
-                        type:"transcript",
-                        text:"Hello, who is this?"
-                    }));
-                }, 1000);
             voiceCircle.textContent = 'Processing...';
             return;
             }

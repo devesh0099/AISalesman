@@ -164,6 +164,7 @@ async def generate_response(websocket: WebSocket):
                 name = state.fake_greeting()
                 path = send_fake_audio(name)
                 conversation_name[conversation_id] = name
+                print("Sended first response.")
                 await websocket.send_json(
                     {
                         "path":path,
