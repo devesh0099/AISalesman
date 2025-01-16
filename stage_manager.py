@@ -1,6 +1,6 @@
 from enum import Enum
 import re
-from typing import Dict, List, Optional
+from typing import List
 
 class ConversationStage(Enum):
     GREETING = "greeting"
@@ -14,7 +14,6 @@ class StageManager:
         self.qualification_count = 0
         self.required_qualifications = 1
         
-        # Enhanced keywords/patterns for more accurate stage detection
         self.stage_triggers = {
             ConversationStage.GREETING: [
                 r'\bhi\b|\bhello\b|\bhey\b|\byes\b',
@@ -30,7 +29,7 @@ class StageManager:
                 r'\bprice\b|\bcost\b|\bfees\b',
                 r'\bdetails\b|\bmore\s+information\b',
                 r'\bbenefits\b|\bfeatures\b|\badvantages\b',
-                r'\bcourse\b|\bprogram\b|\btraining\b'  # Added education-related terms
+                r'\bcourse\b|\bprogram\b|\btraining\b'
             ],
             ConversationStage.CLOSING: [
                 r'\bbuy\b|\bpurchase\b|\benroll\b',
@@ -56,44 +55,33 @@ class StageManager:
         return any(re.search(pattern, response_lower) for pattern in patterns)
     
     def should_progress_from_qualification(self, customer_response: str) -> bool:
-        """Determines if conversation should progress from qualification stage."""
-        # Check for progression signals
         if self.analyze_response(customer_response, self.progression_signals[ConversationStage.QUALIFICATION]):
             return True
         
-        # Check for pitching triggers
         if self.analyze_response(customer_response, self.stage_triggers[ConversationStage.PITCHING]):
             return True
         
-        # Progress based on qualification count
         self.qualification_count += 1
         return self.qualification_count >= self.required_qualifications
     
     def update_stage(self, customer_response: str) -> str:
-        """Updates the conversation stage based on customer response."""
-        
-        # Special handling for qualification stage
         if self.current_stage == ConversationStage.QUALIFICATION:
             if self.should_progress_from_qualification(customer_response):
                 self.current_stage = ConversationStage.PITCHING
                 return self.current_stage.value
         
-        # Progress from greeting to qualification
         elif self.current_stage == ConversationStage.GREETING:
             if self.analyze_response(customer_response, self.stage_triggers[ConversationStage.GREETING]):
                 self.current_stage = ConversationStage.QUALIFICATION
         
-        # Progress from pitching to closing
         elif self.current_stage == ConversationStage.PITCHING:
             if self.analyze_response(customer_response, self.stage_triggers[ConversationStage.CLOSING]):
                 self.current_stage = ConversationStage.CLOSING
         
-        # Debug logging (remove in production)
         print(f"Stage updated to: {self.current_stage.value}, Qualification count: {self.qualification_count}")
         
         return self.current_stage.value
     
     def reset(self):
-        """Resets the stage manager to initial state."""
         self.current_stage = ConversationStage.GREETING
         self.qualification_count = 0

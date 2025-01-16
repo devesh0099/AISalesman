@@ -4,8 +4,6 @@ import requests
 import time
 import os
 from dotenv import load_dotenv
-# from threading import Thread, Event
-# from queue import Queue, Empty
 
 load_dotenv()
 
@@ -15,8 +13,6 @@ headers = {"Authorization": f"Bearer {HUGGINGFACE_API_TOKEN}"}
 
 sample_rate = 16000
 duration = 5
-# stop_recording = Event()
-# audio_queue = Queue()
 transcriptions = []
 
 def detect_silence(audio_data, threshold=0.005):
@@ -25,14 +21,11 @@ def detect_silence(audio_data, threshold=0.005):
 
 
 def transcribe_audio(audio):
-    """Transcribe audio data using Hugging Face API."""
     audio_file_path = f"temp_audio_{time.time()}.wav"
     
     try:
-        # Write audio file
         write(audio_file_path, sample_rate, (audio * 32767).astype(np.int16))
         
-        # Send to API
         with open(audio_file_path, "rb") as audio_file:
             start_api = time.time()
             response = requests.post(API_URL, headers=headers, data=audio_file)

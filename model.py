@@ -57,7 +57,7 @@ class ConversationState:
         query_response = self.conversation_index.query(
             vector=query_embedding,
             filter={"customer_id": {"$eq": self.customer_id}},
-            top_k=8,  # Fetch more to filter later
+            top_k=8,  
             include_metadata=True
         )
         
@@ -90,9 +90,6 @@ class ConversationState:
                 array = random.sample(qualification_texts,4)
                 result = f"[{array[0]} or {array[1]} or {array[2]} or {array[3]}]"
                 return result
-            case "objection_handling":
-                objection_handling = self.load_json("data/examples_of_stages/objection_handling.json")
-                #Skipped for now
             case "closing":
                 closing = self.load_json("data/examples_of_stages/closing.json")
                 closing_texts =  [texts['text'] for texts in closing["closing"]]
@@ -118,21 +115,6 @@ class ConversationState:
         last_responses = self.get_conversation_context(query)
         self.store_conversation(query, is_user=True)
         context = self.get_coaching_context(query)
-        # if not hasattr(structure_forming, 'stage_manager'):
-        #     structure_forming.stage_manager = StageManager()
-
-        # stage = structure_forming.stage_manager.get_current_stage()
-
-        # # GET EXAMPLES
-        # examples = get_examples(stage)
-
-        # # GET LAST RESPONSES
-        # last_responses = get_conversation_context(customer_id, query)
-        # store_conversation(customer_id, query, is_user=True)
-
-        # # NOW RETRIEVE CONTEXT
-        # context = get_coaching_context(query)
-
         s = f"[stage:{stage}, context:{context}, examples:{examples}, last_response:{last_responses}, current_que:{query}]"
 
         # Get current stage and update based on query
@@ -151,45 +133,3 @@ class ConversationState:
         self.name = Settings.llm.return_name()
         self.store_conversation(f"Hello, This is {self.name} speaking from study centre.Do you have a moment?", is_user=True)
         return self.name
-
-
-
-# customer_id = "12312211451234412123454321"
-# while True:
-#     query = input("Customer: ")
-#     response = structure_forming(customer_id, query)
-#     print("System: " + str(response))
-
-# def get_response(customer_id,query):
-#     response = structure_forming(customer_id,query);
-#     return response;
-
-# def main(query):
-#     customer_id = random.randint(1,10000000000);
-#     res = get_response(customer_id,query);
-#     return res;
-
-#     customer_id = str(random.randint(1,1000000000))
-#     # print("Customer: "+ query)
-#     response = structure_forming(customer_id, query)
-#     return response
-#     # print("System: " + str(response))
-
-# def initialize_conversation(conversation_id: str):
-#     conversation_states[conversation_id] = ConversationState()
-#     return conversation_states[conversation_id]
-
-# def get_conversation_state(conversation_id: str):
-#     return conversation_states.get(conversation_id)
-
-# def cleanup_conversation(conversation_id: str):
-#     if conversation_id in conversation_states:
-#         del conversation_states[conversation_id]
-
-# def main(conversation_id: str, query: str):
-#     state = get_conversation_state(conversation_id)
-#     if not state:
-#         state = initialize_conversation(conversation_id)
-#     return state
-    # response = state.structure_forming(query)
-    # return response

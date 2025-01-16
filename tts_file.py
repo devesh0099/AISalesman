@@ -19,7 +19,6 @@ def load_config(config_path='config.toml'):
         return tomli.load(config_file)
 
 def prepare_model_and_vocoder(config):
-    # Vocoder selection (default to vocos)
     vocoder_name = "vocos"
     vocoder_local_path = "../checkpoints/vocos-mel-24khz"
     vocoder = load_vocoder(
@@ -28,13 +27,11 @@ def prepare_model_and_vocoder(config):
         local_path=vocoder_local_path
     )
 
-    # Model selection
     if config['model'] == "F5-TTS":
         model_cls = DiT
         model_cfg_path = str(files("f5_tts").joinpath("configs/F5TTS_Base_train.yaml"))
         model_cfg = OmegaConf.load(model_cfg_path).model.arch
         
-        # Checkpoint selection
         ckpt_file = str(cached_path(
             f"hf://SWivid/F5-TTS/F5TTS_Base/model_1200000.safetensors"
         ))
@@ -47,7 +44,6 @@ def prepare_model_and_vocoder(config):
     else:
         raise ValueError(f"Unsupported model: {config['model']}")
 
-    # Load model
     ema_model = load_model(
         model_cls, 
         model_cfg, 
@@ -58,20 +54,16 @@ def prepare_model_and_vocoder(config):
     return ema_model, vocoder
 
 def generate_tts_audio(config):
-    # Prepare model and vocoder
     print("Initializing TTS model...")
     ema_model, vocoder = prepare_model_and_vocoder(config)
 
-    # Prepare reference audio and text
     ref_audio, ref_text = preprocess_ref_audio_text(
         config['ref_audio'], 
         config['ref_text']
     )
 
-    # Determine text to generate
     gen_text = config['gen_file'] if config['gen_file'] else config['gen_text']
 
-    # Generate audio
     print(f"Generating audio for text: {gen_text}")
     audio_segment, final_sample_rate, _ = infer_process(
         ref_audio,
@@ -81,10 +73,8 @@ def generate_tts_audio(config):
         vocoder
     )
 
-    # Ensure output directory exists
     os.makedirs(config.get('output_dir', 'output'), exist_ok=True)
 
-    # Save output path
     output_path = os.path.join(
         config.get('output_dir', 'output'), 
         config.get('output_file', 'output.wav')
@@ -93,7 +83,6 @@ def generate_tts_audio(config):
     print(f"Saving audio to: {output_path}")
     sf.write(output_path, audio_segment, final_sample_rate)
 
-    # Remove silence if configured
     if config.get('remove_silence', False):
         print("Removing silence from generated audio...")
         remove_silence_for_generated_wav(output_path)
@@ -103,14 +92,11 @@ def generate_tts_audio(config):
 
 def main():
     try:
-        # Load configuration
         config = load_config()
         
-        # Generate TTS audio
         generate_tts_audio(config)
     
     except Exception as e:
         print(f"An error occurred: {e}")
-        # Optionally, print traceback for more details
         import traceback
         traceback.print_exc()

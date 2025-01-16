@@ -1,4 +1,3 @@
-// Global variables
 let calls = [];
 let currentSection = 'botSelector';
 
@@ -9,45 +8,25 @@ let socket = null;
 let conversationSocket = null;
 const CHUNK_DURATION = 5000; // 5 seconds in milliseconds
 
-// DOM elements
 const sections = {
     botSelector: document.getElementById('botSelector'),
     salesBot: document.getElementById('salesBot'),
-    leadBot: document.getElementById('leadBot'),
     callManager: document.getElementById('callManager'),
-    callSummary: document.getElementById('callSummary')
 };
 
 const resetButton = document.getElementById('resetButton');
 const startSalesCallButton = document.getElementById('startSalesCall');
 const addSalesCallButton = document.getElementById('addSalesCall');
-const addLeadCallButton = document.getElementById('addLeadCall');
-const leadOptions = document.getElementById('leadOptions');
 const activeCalls = document.getElementById('activeCalls');
-const customScenarioForm = document.getElementById('customScenarioForm');
 
-// Lead scenarios
-const leadScenarios = [
-    { title: "Discussing Discounts", person: "John Doe", description: "Follow up with a potential customer who has shown interest but is concerned about pricing." },
-    { title: "Past Customer Follow-up", person: "Jane Smith", description: "Reach out to a former student to discuss new course offerings and potential return enrollment." },
-    { title: "Missed Session", person: "Mike Johnson", description: "Contact a student who missed a scheduled session to reschedule and ensure continued engagement." },
-    { title: "Course Enquiry", person: "Emily Brown", description: "Respond to a new lead who has requested information about specific courses and programs." },
-    { title: "Fee Structure", person: "David Wilson", description: "Explain the fee structure and payment options to a potential student who has expressed interest." }
-];
-
-// Helper functions
 function showSection(sectionId) {
-    // Mark previous section as completed
     if (currentSection && currentSection !== sectionId) {
         sections[currentSection].classList.add('completed');
     }
     
-    // Show new section
     sections[sectionId].classList.add('active');
     
-    // Scroll new section into view
     sections[sectionId].scrollIntoView({ behavior: 'smooth', block: 'center' });
-    
     currentSection = sectionId;
 }
 
@@ -72,13 +51,9 @@ function createCallInterface(callType, scenario) {
     `;
 
     const voiceCircle = callContainer.querySelector('.voice-circle');
-    const transcript = callContainer.querySelector('.transcript p');
-    const aiResponse = callContainer.querySelector('.ai-response');
-    const aiResponseText = callContainer.querySelector('.ai-response p');
     const endCallButton = callContainer.querySelector('.end-call');
 
     let isListening = false;
-    let recognition;
 
     function startRecording() {
         navigator.mediaDevices.getUserMedia({ 
@@ -91,7 +66,6 @@ function createCallInterface(callType, scenario) {
             mediaRecorder = new MediaRecorder(stream);
             socket = new WebSocket(`${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/ws/speech-to-text/`);
             
-            // Set up WebSocket handlers
             socket.onopen = () => {
                 console.log("Transcription connection established");
                 startAudioChunking();
@@ -111,7 +85,6 @@ function createCallInterface(callType, scenario) {
                 stopRecording();
             };
 
-            // Start recording
             mediaRecorder.start();
         })
         .catch((error) => {
@@ -127,7 +100,6 @@ function createCallInterface(callType, scenario) {
             }
         }, CHUNK_DURATION);
 
-        // Handle audio chunks
         mediaRecorder.ondataavailable = async (event) => {
             const audioBlob = event.data;
             if (audioBlob.size > 0) {
@@ -136,16 +108,14 @@ function createCallInterface(callType, scenario) {
                     const audioContext = new AudioContext({ sampleRate: 16000 }); // Set sample rate to 16 kHz
                     const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
 
-                    // Ensure mono channel and normalize to [-1.0, 1.0]
                     const float32Array = audioBuffer.numberOfChannels > 1
-                        ? audioBuffer.getChannelData(0) // Use the first channel if stereo
+                        ? audioBuffer.getChannelData(0) 
                         : audioBuffer.getChannelData(0);
 
                     const normalizedArray = float32Array.map(sample =>
                         Math.max(-1.0, Math.min(1.0, sample))
                     );
 
-                    // Send audio data to the backend
                     if (socket && socket.readyState === WebSocket.OPEN) {
                         socket.send(new Float32Array(normalizedArray).buffer);
                     }
@@ -157,8 +127,7 @@ function createCallInterface(callType, scenario) {
         };
     }
 
-    function stopRecording() {
-        
+    function stopRecording() {        
         if (mediaRecorder && mediaRecorder.state === "recording") {
             mediaRecorder.stop();
         }
@@ -195,7 +164,6 @@ function createCallInterface(callType, scenario) {
         
         conversationSocket.onmessage = (event) => {
             const data = JSON.parse(event.data);
-            // console.log(event)
             handleAIResponse(data);
         };
         
@@ -225,8 +193,6 @@ function createCallInterface(callType, scenario) {
             voiceCircle.classList.remove('ai');
         }
         if(data.path) {
-            console.log(data)
-            console.log(data.path)
             let audio = new Audio(data.path);
             audio.play();
             voiceCircle.textContent = 'Tap to Speak';
@@ -271,59 +237,15 @@ function createCallInterface(callType, scenario) {
     });
 
     endCallButton.addEventListener('click', () => {
-        // endCurrentCall()
-        // calls = calls.filter(call => call.id !== callId);
-        callContainer.remove();
-        // if (calls.length === 0) {
-        //     showSection('callSummary');
-        //     document.getElementById('summaryContent').textContent = "This is a placeholder for the call summary. In a real implementation, this would be generated by the AI based on the conversation.";
-        // }
+        window.location.reload();
     });
 
     calls.push({ id: callId, type: callType, scenario });
     return callContainer;
 }
 
-// Event listeners
 resetButton.addEventListener('click', () => {
-    // Clear all calls
-    calls = [];
-    activeCalls.innerHTML = '';
-    
-    // Reset lead options and custom scenario form
-    leadOptions.style.display = 'none';
-    customScenarioForm.style.display = 'none';
-    customScenarioForm.reset();
-    
-    // Remove completed and active states from all sections
-    Object.values(sections).forEach(section => {
-        section.classList.remove('completed', 'active');
-    });
-    
-    // Re-enable bot selection buttons
-    document.querySelectorAll('.bot-option').forEach(btn => {
-        btn.disabled = false;
-    });
-    
-    // Clear any existing transcripts and AI responses
-    document.querySelectorAll('.transcript p').forEach(p => {
-        p.textContent = '';
-    });
-    document.querySelectorAll('.ai-response').forEach(response => {
-        response.style.display = 'none';
-    });
-    // endCurrentCall()
-    // Reset current section tracking
-    currentSection = 'botSelector';
-    
-    // Show initial section
-    sections.botSelector.classList.add('active');
-    
-    // Clear summary content
-    document.getElementById('summaryContent').textContent = '';
-    
-    // Scroll to top
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.location.reload();
 });
 
 document.querySelectorAll('.bot-option').forEach(button => {
@@ -344,149 +266,6 @@ startSalesCallButton.addEventListener('click', () => {
     activeCalls.appendChild(callInterface);
     showSection('callManager');
 });
-
-addSalesCallButton.addEventListener('click', () => {
-    const callInterface = createCallInterface('sales');
-    activeCalls.appendChild(callInterface);
-});
-
-addLeadCallButton.addEventListener('click', () => {
-    leadOptions.innerHTML = '';
-    leadScenarios.forEach((scenario, index) => {
-        const button = document.createElement('button');
-        button.textContent = scenario.title;
-        button.addEventListener('click', () => {
-            const callInterface = createCallInterface('lead', scenario.title);
-            activeCalls.appendChild(callInterface);
-            leadOptions.style.display = 'none';
-        });
-        leadOptions.appendChild(button);
-    });
-
-    const customButton = document.createElement('button');
-    customButton.textContent = 'Custom';
-    customButton.addEventListener('click', () => {
-        customScenarioForm.style.display = 'flex';
-        leadOptions.style.display = 'none';
-    });
-    leadOptions.appendChild(customButton);
-
-    leadOptions.style.display = 'flex';
-});
-
-customScenarioForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const customScenario = document.getElementById('customReason').value;
-    const callInterface = createCallInterface('lead', customScenario);
-    activeCalls.appendChild(callInterface);
-    customScenarioForm.reset();
-    customScenarioForm.style.display = 'none';
-    showSection('callManager');
-});
-
-// Initialize lead scenarios
-function initializeScenarioCards() {
-    const scenarioCardsContainer = document.querySelector('.scenario-cards');
-    leadScenarios.forEach((scenario, index) => {
-        const card = document.createElement('div');
-        card.className = 'scenario-card';
-        card.innerHTML = `
-            <h3>${scenario.title}</h3>
-            <p><strong>Sample Person:</strong> ${scenario.person}</p>
-            <p>${scenario.description}</p>
-            <p><strong>Phone:</strong> 555-${Math.floor(100 + Math.random() * 900)}-${Math.floor(1000 + Math.random() * 9000).toString().slice(0, 2)}XX</p>
-        `;
-        card.addEventListener('click', () => {
-            const callInterface = createCallInterface('lead', scenario.title);
-            activeCalls.appendChild(callInterface);
-            showSection('callManager');
-        });
-        scenarioCardsContainer.appendChild(card);
-    });
-}
-
-function hardReset() {
-    // Close all active WebSocket connections
-    activeConnections.forEach(connection => {
-        if (connection && connection.readyState !== WebSocket.CLOSED) {
-            connection.close();
-        }
-    });
-
-    // Clear connection tracking array
-    activeConnections = [];
-
-    // Reset UI sections
-    document.querySelectorAll('.section').forEach(section => {
-        section.classList.remove('active');
-    });
-
-    // Show bot selector
-    document.getElementById('botSelector').classList.add('active');
-
-    // Clear any active call elements
-    const activeCalls = document.getElementById('activeCalls');
-    activeCalls.innerHTML = '';
-
-    // Reset call summary
-    const summaryContent = document.getElementById('summaryContent');
-    if (summaryContent) {
-        summaryContent.textContent = '';
-    }
-
-    // Reset any ongoing speech or audio
-    if (window.speechSynthesis) {
-        window.speechSynthesis.cancel();
-    }
-
-    // Reset any global call state variables
-    currentCallState = null;
-
-    // Optional: Reload page for complete reset
-    // window.location.reload();
-}
-
-// Attach reset functionality to reset button
-document.getElementById('resetButton').addEventListener('click', hardReset);
-
-// Enhanced End Call Function
-function endCurrentCall() {
-    // Close current WebSocket connection
-    if (currentCallState && currentCallState.socket) {
-        currentCallState.socket.close();
-    }
-
-    // Trigger hard reset
-    hardReset();
-
-    // Optional: Navigate to call summary
-    showCallSummarySection();
-}
-
-function showCallSummarySection() {
-    document.querySelectorAll('.section').forEach(section => {
-        section.classList.remove('active');
-    });
-    document.getElementById('callSummary').classList.add('active');
-}
-
-// WebSocket Connection Tracking
-function createTrackedWebSocket(url) {
-    const socket = new WebSocket(url);
-    
-    // Track this connection
-    activeConnections.push(socket);
-
-    // Remove from tracking when closed
-    socket.addEventListener('close', () => {
-        const index = activeConnections.indexOf(socket);
-        if (index > -1) {
-            activeConnections.splice(index, 1);
-        }
-    });
-
-    return socket;
-}
 
 // Initialize the app
 showSection('botSelector');

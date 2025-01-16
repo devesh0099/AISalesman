@@ -19,14 +19,11 @@ def detect_silence(audio_data, threshold=0.005):
     return rms < threshold
 
 def transcribe_audio(audio):
-    """Transcribe audio data using Hugging Face API."""
     audio_file_path = f"temp_audio_{time.time()}.wav"
     
     try:
-        # Write audio file
         write(audio_file_path, sample_rate, (audio * 32767).astype(np.int16))
         
-        # Send to API
         with open(audio_file_path, "rb") as audio_file:
             start_api = time.time()
             response = requests.post(API_URL, headers=headers, data=audio_file)

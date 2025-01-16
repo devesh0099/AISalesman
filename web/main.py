@@ -29,7 +29,6 @@ session_transcripts: Dict = {}
 
 #Multiple Calls conversation state
 conversation_states = {}
-
 conversation_name = {}
 
 @app.websocket("/ws/speech-to-text/")
@@ -52,18 +51,14 @@ async def websocket_endpoint(websocket: WebSocket):
 
             print("Data received")
 
-            # Ensure audio data is valid
             if len(audio_array) > 0:
-                # Get transcription for this chunk
                 print("Given to transcribe")
                 transcript_chunk = transcribe_audio(audio_array)
                 print("Transcription done")
 
                 if transcript_chunk:
-                    # Add to session transcript
                     session_transcripts[session_id].append(transcript_chunk)
 
-                    # Send back current transcription
                     print("Transcription sent back")
                     await websocket.send_json({
                         "transcription": transcript_chunk,
@@ -84,7 +79,6 @@ def send_fake_audio(name):
     dirname = os.path.dirname(__file__)
     dir = os.path.dirname(dirname)
     filename = os.path.join(dir, 'data/vocals/matching.json')
-    # print(filename)
 
     with open(filename, 'r') as file:
         dictionary = json.load(file)
@@ -167,10 +161,6 @@ async def generate_response(websocket: WebSocket):
                 print("new user")
                 conversation_states[conversation_id] = model.ConversationState()
                 state = conversation_states.get(conversation_id)
-                # First message - initialize conversation
-                # state = model.main(conversation_id)
-                # response = str(model.main(conversation_id, transcriptText))    
-                # Subsequent messages - use existing state
                 name = state.fake_greeting()
                 path = send_fake_audio(name)
                 conversation_name[conversation_id] = name
@@ -194,10 +184,8 @@ async def generate_response(websocket: WebSocket):
     
     except WebSocketDisconnect:
         print("LLM Disconnect ")
-        # model.cleanup_conversation(conversation_id)
     except Exception as e:
         print(f"Error in conversation: {e}")
-        # model.cleanup_conversation(conversation_id)
         await websocket.close()
 
 
