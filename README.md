@@ -5,14 +5,6 @@
 
 The **AI Salesman** is a cutting-edge solution designed to automate and optimize customer interactions via phone calls. This system uses advanced AI technologies to deliver human-like conversations, efficiently handle inquiries, and successfully close sales. By providing fast, reliable, and natural interactions, the AI Salesman helps businesses enhance customer engagement and streamline communication.
 
----
-
-## Deployment Link
-
-🚀 [**Access the AI Salesman Demonstration**](https://aisalesman.onrender.com/)
-
----
-
 ## Key Features
 
 ✨ **Real-Time Interaction**  
