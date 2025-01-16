@@ -187,6 +187,8 @@ function createCallInterface(callType, scenario) {
         if (data.response) {
             let audio = new Audio(data.audio)
             audio.play()
+            const transcriptElement = document.querySelector('.transcript p');
+            transcriptElement.textContent = " "
             const responseText = typeof data.response === 'object' ? 
             data.response.text || data.response.toString() : 
             data.response;
