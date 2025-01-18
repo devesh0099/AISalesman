@@ -81,7 +81,6 @@ Follow these steps to install and run the AI Salesman:
 
    ```env
    PINECONE_API=<your_pinecone_api_key>
-   LLAMA_API_KEY=<your_llama_api_key>
    HUGGING_FACE_API=<your_hugging_face_api_key>
    SAMBANOVA_API_KEY=<your_sambanova_api_key>
    ```
