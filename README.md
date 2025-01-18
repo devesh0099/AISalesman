@@ -33,7 +33,7 @@ Easily customizable for diverse industries and specific use cases.
 ## Limitations
 
 ⚠️ **Language Constraints**  
-Supports only the languages compatible with the STT and TTS modules.
+Supports only English.
 
 ⚠️ **Memory Constraints**  
 Trades memory for longer calls due to being limited to 8k token memory.
