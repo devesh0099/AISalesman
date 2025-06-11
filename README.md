@@ -27,7 +27,7 @@ Engages customers strategically to improve conversion rates.
 Leverages external APIs for enhanced functionality, such as data retrieval and analytics.
 
 📡 **Scalability**  
-Easily customizable for diverse industries and specific use cases.
+Easily customizable for diverse industries and specific use cases
 
 ---
 
