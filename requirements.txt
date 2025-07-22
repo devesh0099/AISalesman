@@ -121,7 +121,6 @@ pandas
 pillow
 pinecone
 pinecone-client
-pinecone-plugin-inference
 pinecone-plugin-interface
 platformdirs
 pooch
